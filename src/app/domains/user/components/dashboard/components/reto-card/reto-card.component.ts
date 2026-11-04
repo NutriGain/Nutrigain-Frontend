@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { ApiService } from '../../../../../../core/api.service';
+import { ChallengeAssignment } from '../../../../../../core/models';
 
+/** The extreme challenge of the day: the same one all day, and it can be completed once. */
 @Component({
   selector: 'app-reto-card',
   standalone: true,
@@ -12,18 +14,22 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./reto-card.component.css']
 })
 export class RetoCardComponent implements OnInit {
-  reto: any;
+  asignacion?: ChallengeAssignment;
 
-  constructor(private http: HttpClient) {}
+  constructor(private api: ApiService) {}
 
-  ngOnInit(): void {
-    this.obtenerReto();
+  get completado(): boolean {
+    return this.asignacion?.status === 'COMPLETED';
   }
 
-  obtenerReto(): void {
-    this.http.get<any[]>('https://fake-api-murex-one.vercel.app/retos').subscribe(data => {
-      const index = Math.floor(Math.random() * data.length);
-      this.reto = data[index];
-    });
+  ngOnInit(): void {
+    this.api.requestDailyExtreme().subscribe(a => (this.asignacion = a));
+  }
+
+  completar(): void {
+    if (!this.asignacion || this.completado) {
+      return;
+    }
+    this.api.completeChallenge(this.asignacion.id).subscribe(a => (this.asignacion = a));
   }
 }

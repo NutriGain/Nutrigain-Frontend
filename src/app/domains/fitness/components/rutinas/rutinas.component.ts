@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import {BottomNavbarComponent} from '../../../../shared/components/bottom-navbar/bottom-navbar.component';
-import {environment} from '../../../../../environments/environment';
+import { forkJoin } from 'rxjs';
+import { BottomNavbarComponent } from '../../../../shared/components/bottom-navbar/bottom-navbar.component';
+import { ApiService } from '../../../../core/api.service';
+import { RoutineDay, WeeklyProgress } from '../../../../core/models';
+import { dayEs } from '../../../../core/i18n';
 
 @Component({
   selector: 'app-rutinas',
@@ -12,16 +14,31 @@ import {environment} from '../../../../../environments/environment';
   styleUrls: ['./rutinas.component.css']
 })
 export class RutinasComponent implements OnInit {
-  rutinas: any[] = [];
+  rutinas: RoutineDay[] = [];
+  progreso?: WeeklyProgress;
+  error = '';
 
-  private readonly base = environment.apiUrl;
+  readonly diaEs = dayEs;
 
-  constructor(private http: HttpClient) {}
+  constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    const userId = 1; // Temporal: simula al usuario logueado
-    this.http.get<any[]>(`${this.base}/rutinas?userId=${userId}`).subscribe(data => {
-      this.rutinas = data;
+    forkJoin({ rutinas: this.api.getRoutines(), progreso: this.api.getCurrentProgress() })
+      .subscribe(({ rutinas, progreso }) => {
+        this.rutinas = rutinas;
+        this.progreso = progreso;
+      });
+  }
+
+  hecho(routineDayId: number): boolean {
+    return this.progreso?.completedRoutineDayIds.includes(routineDayId) ?? false;
+  }
+
+  completar(rutina: RoutineDay): void {
+    this.error = '';
+    this.api.completeWorkout(rutina.id).subscribe({
+      next: progreso => (this.progreso = progreso),
+      error: () => (this.error = 'No se pudo registrar el entrenamiento. Intenta de nuevo.')
     });
   }
 }

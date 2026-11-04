@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import {BottomNavbarComponent} from '../../../../shared/components/bottom-navbar/bottom-navbar.component';
-import {environment} from '../../../../../environments/environment';
+import { ApiService } from '../../../../core/api.service';
+import { NutritionPlan } from '../../../../core/models';
+import { dayEs, mealTypeEs, mealTypeIcon } from '../../../../core/i18n';
 
 @Component({
   selector: 'app-nutricion',
@@ -12,17 +12,23 @@ import {environment} from '../../../../../environments/environment';
   styleUrls: ['./nutricion.component.css']
 })
 export class NutricionComponent implements OnInit {
-  planes: any[] = [];
-  private readonly base = environment.apiUrl;  // ← tu base URL
+  plan?: NutritionPlan;
+  error = '';
 
+  readonly diaEs = dayEs;
+  readonly tipoEs = mealTypeEs;
+  readonly icono = mealTypeIcon;
 
-  constructor(private http: HttpClient) {}
+  constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    const userId = 1; // simulado por ahora
-    this.http.get<any[]>(`${this.base}/planesNutricionales?userId=${userId}`)
-      .subscribe(data => {
-        this.planes = data;
-      });
+    this.api.getNutritionPlan().subscribe({
+      next: plan => (this.plan = plan),
+      error: () => (this.error = 'No se pudo cargar tu plan nutricional.')
+    });
+  }
+
+  volver(): void {
+    window.history.back();
   }
 }

@@ -1,14 +1,23 @@
 <div class="rutinas-wrapper">
   <h2 class="titulo">Mis Rutinas</h2>
 
+  <p class="semana" *ngIf="progreso">
+    Esta semana: {{ progreso.completedWorkouts }} de {{ progreso.plannedWorkouts }} entrenamientos
+    ({{ progreso.completionPercentage }}%)
+  </p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
   <div *ngFor="let rutina of rutinas" class="rutina-card">
-    <h3 class="dia">{{ rutina.dia }}</h3>
+    <h3 class="dia">{{ diaEs(rutina.dayOfWeek) }}</h3>
     <ul class="lista-ejercicios">
-      <li *ngFor="let e of rutina.ejercicios">
-        <span class="nombre">{{ e.nombre }}</span>
-        <span class="reps">{{ e.repeticiones }}</span>
+      <li *ngFor="let e of rutina.exercises">
+        <span class="nombre">{{ e.name }}</span>
+        <span class="reps">{{ e.sets }}x{{ e.reps }}</span>
       </li>
     </ul>
+    <button class="btn-completar" [disabled]="hecho(rutina.id)" (click)="completar(rutina)">
+      {{ hecho(rutina.id) ? '✓ Completado' : 'Marcar como hecho' }}
+    </button>
   </div>
   <app-bottom-navbar></app-bottom-navbar>
 </div>

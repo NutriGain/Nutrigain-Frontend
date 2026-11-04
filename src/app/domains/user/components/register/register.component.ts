@@ -1,9 +1,8 @@
-import  { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { UserApiService } from '../../services/user-api.service';
 import { Router } from '@angular/router';
-import { User } from '../../data/internal/user.model';
+import { AuthService } from '../../../../core/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -19,7 +18,7 @@ export class RegisterComponent {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserApiService,
+    private auth: AuthService,
     private router: Router
   ) {
     this.form = this.fb.group({
@@ -33,7 +32,6 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.form.invalid) {
-      // Marcar todos los campos como touched para mostrar errores
       Object.keys(this.form.controls).forEach(key => {
         this.form.get(key)?.markAsTouched();
       });
@@ -41,24 +39,24 @@ export class RegisterComponent {
       return;
     }
 
-    const newUser: User = {
-      ...this.form.value,
-      id: Date.now() // simulamos ID único
-    };
+    const { nombre, email, password, edad, caminoSeleccionado } = this.form.value;
 
-    this.userService.createUser(newUser).subscribe({
+    this.auth.signUp({
+      name: nombre,
+      email,
+      password,
+      age: Number(edad),
+      fitnessPathId: Number(caminoSeleccionado)
+    }).subscribe({
       next: () => {
         this.successMessage = 'Usuario registrado exitosamente. Redirigiendo...';
         this.mensajeError = '';
-
-        // Redireccionar después de 2 segundos
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
+        setTimeout(() => this.router.navigate(['/login']), 2000);
       },
       error: (error) => {
-        console.error('Error al registrar:', error);
-        this.mensajeError = 'Error al registrar el usuario. Intenta nuevamente.';
+        this.mensajeError = error?.status === 409
+          ? 'Ese correo ya está registrado.'
+          : error?.error?.details?.[0] ?? 'Error al registrar el usuario. Intenta nuevamente.';
         this.successMessage = '';
       }
     });

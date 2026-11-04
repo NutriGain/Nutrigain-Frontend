@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plan Nutricional</title>
-</head>
-<body>
 <div class="floating-elements">
   <div class="floating-element"></div>
   <div class="floating-element"></div>
@@ -13,7 +5,7 @@
   <div class="floating-element"></div>
 </div>
 
-<button class="back-button" onclick="window.history.back()">
+<button class="back-button" (click)="volver()">
   ← Volver
 </button>
 
@@ -23,306 +15,24 @@
     <p>Tu guía semanal personalizada para una alimentación balanceada</p>
   </div>
 
-  <div class="days-grid">
-    <!-- Lunes -->
-    <div class="day-card">
-      <div class="day-header">
-        <div class="day-name">Lunes</div>
-        <div class="day-date">Inicio de semana saludable</div>
-      </div>
-      <div class="meal">
-        <img src="https://campograndeperu.com/wp-content/uploads/2024/02/avena-con-platano.jpg" alt="Avena con plátano" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌅</span>
-            Desayuno
-          </div>
-          <div class="meal-description">Avena con plátano</div>
-          <div class="meal-calories">300 cal • 12g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://cloudfront-us-east-1.images.arcpublishing.com/infobae/H6BF45RGRNBDDI6NYOP5LAMWAI.jpg" alt="Pollo a la plancha" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">☀️</span>
-            Almuerzo
-          </div>
-          <div class="meal-description">Pollo a la plancha con arroz</div>
-          <div class="meal-calories">600 cal • 35g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://mejorconsalud.as.com/wp-content/uploads/2018/07/sopa-verduras-1.jpg" alt="Sopa de verduras" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌙</span>
-            Cena
-          </div>
-          <div class="meal-description">Sopa de verduras</div>
-          <div class="meal-calories">280 cal • 10g proteína</div>
-        </div>
-      </div>
-    </div>
+  <p *ngIf="error">{{ error }}</p>
 
-    <!-- Martes -->
-    <div class="day-card">
+  <div class="days-grid" *ngIf="plan">
+    <div class="day-card" *ngFor="let day of plan.days">
       <div class="day-header">
-        <div class="day-name">Martes</div>
-        <div class="day-date">Energía y vitalidad</div>
+        <div class="day-name">{{ diaEs(day.dayOfWeek) }}</div>
       </div>
-      <div class="meal">
-        <img src="https://misantoremedio.com/cdn/shop/articles/Screen_Shot_2022-06-01_at_2.08.33_PM.png?v=1654106931&width=1100" alt="Tostadas con mantequilla de maní" class="meal-image">
+      <div class="meal" *ngFor="let item of day.meals">
+        <img [src]="item.meal.imageUrl" [alt]="item.meal.name" class="meal-image">
         <div class="meal-content">
           <div class="meal-type">
-            <span class="meal-icon">🌅</span>
-            Desayuno
+            <span class="meal-icon">{{ icono(item.mealType) }}</span>
+            {{ tipoEs(item.mealType) }}
           </div>
-          <div class="meal-description">Tostadas con mantequilla de maní y banana</div>
-          <div class="meal-calories">360 cal • 12g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://recetas.encolombia.com/wp-content/uploads/2025/01/Ensalada-de-atun-con-aguacate.jpg" alt="Ensalada de atún" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">☀️</span>
-            Almuerzo
-          </div>
-          <div class="meal-description">Ensalada de atún</div>
-          <div class="meal-calories">450 cal • 30g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://cocinaperuana.espaciolatino.com/recetas-de-sopas/img600/crema-zapallo-huevo.jpg" alt="Crema de zapallo" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌙</span>
-            Cena
-          </div>
-          <div class="meal-description">Crema de zapallo con huevo sancochado</div>
-          <div class="meal-calories">320 cal • 16g proteína</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Miércoles -->
-    <div class="day-card">
-      <div class="day-header">
-        <div class="day-name">Miércoles</div>
-        <div class="day-date">Mitad de semana</div>
-      </div>
-      <div class="meal">
-        <img src="https://okdiario.com/img/recetas/2017/10/01/pudding-de-chia.jpg" alt="Chía pudding" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌅</span>
-            Desayuno
-          </div>
-          <div class="meal-description">Chía pudding con frutos rojos</div>
-          <div class="meal-calories">280 cal • 10g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://comedera.com/wp-content/uploads/sites/9/2023/05/shutterstock_2073860435.jpg" alt="Arroz chaufa" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">☀️</span>
-            Almuerzo
-          </div>
-          <div class="meal-description">Arroz chaufa de pollo</div>
-          <div class="meal-calories">700 cal • 32g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://images.aws.nestle.recipes/original/2024_10_14T08_58_48_badun_images.badun.es_tortilla_de_espinacas_y_queso_fresco.jpg" alt="Tortilla de espinaca" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌙</span>
-            Cena
-          </div>
-          <div class="meal-description">Tortilla de espinaca y queso</div>
-          <div class="meal-calories">340 cal • 20g proteína</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Jueves -->
-    <div class="day-card">
-      <div class="day-header">
-        <div class="day-name">Jueves</div>
-        <div class="day-date">Renovando energías</div>
-      </div>
-      <div class="meal">
-        <img src="https://comedera.com/wp-content/uploads/sites/9/2022/12/tosta-de-huevo-revuelto.jpg" alt="Huevos revueltos" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌅</span>
-            Desayuno
-          </div>
-          <div class="meal-description">Huevos revueltos con tostadas</div>
-          <div class="meal-calories">350 cal • 20g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://cocina-casera.com/wp-content/uploads/2018/04/tallarines-rojos.jpg" alt="Tallarines rojos" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">☀️</span>
-            Almuerzo
-          </div>
-          <div class="meal-description">Tallarines rojos con carne</div>
-          <div class="meal-calories">650 cal • 28g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://www.lacocinasana.com/static/59bdd63adf529051381443d3480e28dd/a892d/pechuga_pavo_16043349ed.jpg" alt="Sandwich de pavo" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌙</span>
-            Cena
-          </div>
-          <div class="meal-description">Sandwich de pavo</div>
-          <div class="meal-calories">350 cal • 20g proteína</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Viernes -->
-    <div class="day-card">
-      <div class="day-header">
-        <div class="day-name">Viernes</div>
-        <div class="day-date">Fin de semana cerca</div>
-      </div>
-      <div class="meal">
-        <img src="https://b3tterfoods.com/cdn/shop/articles/bowl_de_granola_con_yogurt_y_frutas_1200x1200.jpg?v=1698767246" alt="Yogurt con granola" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌅</span>
-            Desayuno
-          </div>
-          <div class="meal-description">Yogurt con granola</div>
-          <div class="meal-calories">200 cal • 8g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://cloudfront-us-east-1.images.arcpublishing.com/infobae/H6BF45RGRNBDDI6NYOP5LAMWAI.jpg" alt="Pollo a la plancha" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">☀️</span>
-            Almuerzo
-          </div>
-          <div class="meal-description">Pollo a la plancha con arroz</div>
-          <div class="meal-calories">600 cal • 35g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://mejorconsalud.as.com/wp-content/uploads/2018/07/sopa-verduras-1.jpg" alt="Sopa de verduras" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌙</span>
-            Cena
-          </div>
-          <div class="meal-description">Sopa de verduras</div>
-          <div class="meal-calories">280 cal • 10g proteína</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sábado -->
-    <div class="day-card">
-      <div class="day-header">
-        <div class="day-name">Sábado</div>
-        <div class="day-date">Día de relajación</div>
-      </div>
-      <div class="meal">
-        <img src="https://campograndeperu.com/wp-content/uploads/2024/02/avena-con-platano.jpg" alt="Avena con plátano" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌅</span>
-            Desayuno
-          </div>
-          <div class="meal-description">Avena con plátano</div>
-          <div class="meal-calories">300 cal • 12g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://recetas.encolombia.com/wp-content/uploads/2025/01/Ensalada-de-atun-con-aguacate.jpg" alt="Ensalada de atún" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">☀️</span>
-            Almuerzo
-          </div>
-          <div class="meal-description">Ensalada de atún</div>
-          <div class="meal-calories">450 cal • 30g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://cocinaperuana.espaciolatino.com/recetas-de-sopas/img600/crema-zapallo-huevo.jpg" alt="Crema de zapallo" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌙</span>
-            Cena
-          </div>
-          <div class="meal-description">Crema de zapallo con huevo sancochado</div>
-          <div class="meal-calories">320 cal • 16g proteína</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Domingo -->
-    <div class="day-card">
-      <div class="day-header">
-        <div class="day-name">Domingo</div>
-        <div class="day-date">Preparación para la semana</div>
-      </div>
-      <div class="meal">
-        <img src="https://misantoremedio.com/cdn/shop/articles/Screen_Shot_2022-06-01_at_2.08.33_PM.png?v=1654106931&width=1100" alt="Tostadas con mantequilla de maní" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌅</span>
-            Desayuno
-          </div>
-          <div class="meal-description">Tostadas con mantequilla de maní y banana</div>
-          <div class="meal-calories">360 cal • 12g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://comedera.com/wp-content/uploads/sites/9/2023/05/shutterstock_2073860435.jpg" alt="Arroz chaufa" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">☀️</span>
-            Almuerzo
-          </div>
-          <div class="meal-description">Arroz chaufa de pollo</div>
-          <div class="meal-calories">700 cal • 32g proteína</div>
-        </div>
-      </div>
-      <div class="meal">
-        <img src="https://images.aws.nestle.recipes/original/2024_10_14T08_58_48_badun_images.badun.es_tortilla_de_espinacas_y_queso_fresco.jpg" alt="Tortilla de espinaca" class="meal-image">
-        <div class="meal-content">
-          <div class="meal-type">
-            <span class="meal-icon">🌙</span>
-            Cena
-          </div>
-          <div class="meal-description">Tortilla de espinaca y queso</div>
-          <div class="meal-calories">340 cal • 20g proteína</div>
+          <div class="meal-description">{{ item.meal.name }}</div>
+          <div class="meal-calories">{{ item.meal.calories }} cal • {{ item.meal.proteins }}g proteína</div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<!-- Snacks disponibles -->
-<div class="snacks-panel">
-  <h4>🍎 Snacks Disponibles:</h4>
-  <div>
-    • Yogurt con granola (200 cal)<br>
-    • Fruta picada (150 cal)<br>
-    • Galletas integrales con mantequilla de maní (230 cal)<br>
-    • Manzana con canela y yogur (180 cal)
-  </div>
-</div>
-
-</body>
-</html>

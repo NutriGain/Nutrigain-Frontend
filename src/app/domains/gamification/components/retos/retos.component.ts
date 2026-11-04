@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { MatCard } from '@angular/material/card';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { BottomNavbarComponent } from '../../../../shared/components/bottom-navbar/bottom-navbar.component';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
-import {environment} from '../../../../../environments/environment';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { ApiService } from '../../../../core/api.service';
+import { ChallengeAssignment, ChallengeCategory, Difficulty } from '../../../../core/models';
+import { CATEGORIES, categoryEs, difficultyEs, todayIso } from '../../../../core/i18n';
 
 @Component({
   selector: 'app-retos',
@@ -45,93 +46,96 @@ import {environment} from '../../../../../environments/environment';
   ]
 })
 export class RetosComponent implements OnInit {
-  retos: any[] = [];
-  retoActual: any;
-  categorias: string[] = ['Todos', 'Ejercicio', 'Nutrición', 'Mindfulness', 'Productividad'];
-  categoriaSeleccionada: string = 'Todos';
-  animacionBoton: string = 'inactive';
+  readonly categorias = CATEGORIES;
+  readonly categoriaEs = categoryEs;
+  readonly dificultadEs = difficultyEs;
 
-  constructor(private http: HttpClient) {}
+  categoriaSeleccionada: ChallengeCategory | null = null;
+  animacionBoton = 'inactive';
+  retoActual?: ChallengeAssignment;
+  historial: ChallengeAssignment[] = [];
+  error = '';
 
-  private readonly base = environment.apiUrl;
-
+  constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    this.http.get<any[]>(`${this.base}/retos`)
-      .subscribe(data => {
-        this.retos = data.map(reto => ({
-          ...reto,
-          completado: false,
-          // Asignar categoría aleatoria si no existe
-          categoria: reto.categoria || this.getRandomCategoria()
-        }));
-        this.seleccionarRetoAleatorio();
-      });
+    this.api.getMyChallenges().subscribe(lista => {
+      this.historial = lista;
+      this.retoActual = lista.find(a => a.status === 'PENDING');
+      if (!this.retoActual) {
+        this.nuevoReto();
+      }
+    });
   }
 
-  seleccionarRetoAleatorio(): void {
+  nuevoReto(): void {
     this.animacionBoton = 'active';
-
-    // Filtrar retos por categoría
-    const retosFiltrados = this.categoriaSeleccionada === 'Todos'
-      ? this.retos
-      : this.retos.filter(reto => reto.categoria === this.categoriaSeleccionada);
-
-    if (retosFiltrados.length > 0) {
-      const index = Math.floor(Math.random() * retosFiltrados.length);
-      this.retoActual = retosFiltrados[index];
-    }
-
-    // Resetear animación del botón
-    setTimeout(() => {
-      this.animacionBoton = 'inactive';
-    }, 200);
+    this.error = '';
+    this.api.drawChallenge(this.categoriaSeleccionada).subscribe({
+      next: asignacion => {
+        this.retoActual = asignacion;
+        this.historial = [asignacion, ...this.historial];
+      },
+      error: () => (this.error = 'No hay retos disponibles para esa categoría.')
+    });
+    setTimeout(() => (this.animacionBoton = 'inactive'), 200);
   }
 
-  seleccionarCategoria(categoria: string): void {
+  cargarExtremo(): void {
+    this.error = '';
+    this.api.requestDailyExtreme().subscribe(asignacion => {
+      this.retoActual = asignacion;
+      if (!this.historial.some(h => h.id === asignacion.id)) {
+        this.historial = [asignacion, ...this.historial];
+      }
+    });
+  }
+
+  seleccionarCategoria(categoria: ChallengeCategory | null): void {
     this.categoriaSeleccionada = categoria;
-    this.seleccionarRetoAleatorio();
+    this.nuevoReto();
   }
 
   marcarComoCompletado(): void {
-    if (this.retoActual && !this.retoActual.completado) {
-      this.retoActual.completado = true;
-
-      // Encontrar el reto en el array principal y actualizarlo
-      const index = this.retos.findIndex(r => r.id === this.retoActual.id);
-      if (index !== -1) {
-        this.retos[index].completado = true;
-      }
+    if (!this.retoActual || this.retoActual.status === 'COMPLETED') {
+      return;
     }
+    this.api.completeChallenge(this.retoActual.id).subscribe({
+      next: completado => {
+        this.retoActual = completado;
+        this.historial = this.historial.map(h => (h.id === completado.id ? completado : h));
+      },
+      error: () => (this.error = 'No se pudo completar el reto.')
+    });
   }
 
-  getDifficultyClass(dificultad: string): string {
-    switch (dificultad?.toLowerCase()) {
-      case 'fácil':
-      case 'facil':
-        return 'facil';
-      case 'medio':
+  getDifficultyClass(dificultad: Difficulty): string {
+    switch (dificultad) {
+      case 'MEDIUM':
         return 'medio';
-      case 'difícil':
-      case 'dificil':
+      case 'HARD':
+      case 'EXTREME':
         return 'dificil';
       default:
         return 'facil';
     }
   }
 
-  getProgreso(): number {
-    if (this.retos.length === 0) return 0;
-    const completados = this.retos.filter(reto => reto.completado).length;
-    return (completados / this.retos.length) * 100;
+  private retosDeHoy(): ChallengeAssignment[] {
+    const hoy = todayIso();
+    return this.historial.filter(h => h.assignedOn === hoy);
   }
 
   getRetosCompletados(): number {
-    return this.retos.filter(reto => reto.completado).length;
+    return this.retosDeHoy().filter(h => h.status === 'COMPLETED').length;
   }
 
-  private getRandomCategoria(): string {
-    const categoriasDisponibles = this.categorias.filter(c => c !== 'Todos');
-    return categoriasDisponibles[Math.floor(Math.random() * categoriasDisponibles.length)];
+  getTotalHoy(): number {
+    return this.retosDeHoy().length;
+  }
+
+  getProgreso(): number {
+    const total = this.getTotalHoy();
+    return total === 0 ? 0 : (this.getRetosCompletados() / total) * 100;
   }
 }

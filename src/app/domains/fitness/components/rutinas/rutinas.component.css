@@ -55,3 +55,28 @@
 .reps {
   color: #495057;
 }
+
+.semana {
+  margin: 0;
+  color: #555;
+  text-align: center;
+}
+
+.error {
+  color: #c62828;
+}
+
+.btn-completar {
+  margin-top: 12px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4caf50;
+  color: #fff;
+  cursor: pointer;
+}
+
+.btn-completar:disabled {
+  background-color: #a5d6a7;
+  cursor: default;
+}

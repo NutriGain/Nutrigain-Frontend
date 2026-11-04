@@ -2,10 +2,12 @@
   <h2 class="titulo">Mi Avatar</h2>
 
   <div class="avatar-card">
-    <img [src]="'assets/' + avatar.imagen" alt="Avatar" class="avatar-img" />
+    <img [src]="'assets/' + avatar.imageUrl" (error)="fallbackImage($event)" alt="Avatar" class="avatar-img" />
     <div class="avatar-info">
-      <p><strong>Nivel:</strong> {{ avatar.nivel }}</p>
-      <p><strong>Estado de ánimo:</strong> {{ avatar.estadoAnimo }}</p>
+      <p><strong>{{ avatar.characterName }}</strong></p>
+      <p><strong>Nivel:</strong> {{ avatar.level }}</p>
+      <p><strong>Experiencia:</strong> {{ avatar.experience }} XP ({{ avatar.experienceToNextLevel }} para el siguiente nivel)</p>
+      <p><strong>Estado de ánimo:</strong> {{ moodEs(avatar.mood) }}</p>
     </div>
   </div>
 </div>

@@ -1,19 +1,22 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { Color, NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
-import {MatCard} from '@angular/material/card';
+import { MatCard } from '@angular/material/card';
+import { ApiService } from '../../../../../../core/api.service';
 
 @Component({
   selector: 'app-bodyweight-card',
   standalone: true,
-  imports: [CommonModule, NgxChartsModule, MatCard],
+  imports: [CommonModule, FormsModule, NgxChartsModule, MatCard],
   templateUrl: './bodyweight-card.component.html',
   styleUrls: ['./bodyweight-card.component.css']
 })
 export class BodyweightCardComponent implements OnInit {
-  data: any[] = [];
-  view: [number, number] = [700, 300]; // default desktop size
+  data: { name: string; series: { name: string; value: number }[] }[] = [];
+  view: [number, number] = [700, 300];
+  nuevoPeso: number | null = null;
+  error = '';
 
   colorScheme: Color = {
     name: 'custom',
@@ -22,26 +25,35 @@ export class BodyweightCardComponent implements OnInit {
     domain: ['#4caf50']
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    this.setResponsiveView(); // ajusta tamaño desde el inicio
+    this.setResponsiveView();
+    this.cargar();
+  }
 
-    const userId = 1;
-    this.http.get<any[]>(`https://fake-api-murex-one.vercel.app/pesos?userId=${userId}`).subscribe(pesos => {
-      if (pesos?.length) {
-        this.data = [{
-          name: 'Peso',
-          series: pesos.map(p => ({
-            name: `Semana ${p.semana}`,
-            value: p.peso
-          }))
-        }];
-      }
+  registrarPeso(): void {
+    if (this.nuevoPeso === null) {
+      return;
+    }
+    this.error = '';
+    this.api.registerBodyWeight(this.nuevoPeso).subscribe({
+      next: () => {
+        this.nuevoPeso = null;
+        this.cargar();
+      },
+      error: () => (this.error = 'Ingresa un peso válido (20 a 500 kg).')
     });
   }
 
-  // Escuchar cambios de tamaño de pantalla
+  private cargar(): void {
+    this.api.getBodyWeights().subscribe(pesos => {
+      this.data = pesos.length
+        ? [{ name: 'Peso', series: pesos.map(p => ({ name: p.recordedOn, value: p.weightKg })) }]
+        : [];
+    });
+  }
+
   @HostListener('window:resize')
   onResize() {
     this.setResponsiveView();
