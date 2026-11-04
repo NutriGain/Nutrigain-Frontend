@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
-  AppNotification, Avatar, Badge, BodyWeight, Challenge, ChallengeAssignment, ChallengeCategory, Competitor,
+  AppNotification, Avatar, FitnessPath, Badge, BodyWeight, Challenge, ChallengeAssignment, ChallengeCategory, Competitor,
   HealthSummary, ManualPlan, Meal, MealType, MotivationalMessage, NutritionPlan, RoutineDay, Streak,
   UpdateProfileRequest, WeeklyProgress
 } from './models';
@@ -16,6 +16,10 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   // Fitness
+  getFitnessPaths(): Observable<FitnessPath[]> {
+    return this.http.get<FitnessPath[]>(`${this.base}/fitness-paths`);
+  }
+
   getRoutines(): Observable<RoutineDay[]> {
     return this.http.get<RoutineDay[]>(`${this.base}/me/routines`);
   }

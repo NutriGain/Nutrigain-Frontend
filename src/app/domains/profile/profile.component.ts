@@ -1,12 +1,16 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BottomNavbarComponent } from '../../shared/components/bottom-navbar/bottom-navbar.component';
+import { Observable, catchError, forkJoin, of } from 'rxjs';
 import { ApiService } from '../../core/api.service';
 import { AuthService } from '../../core/auth.service';
-import { HealthSummary } from '../../core/models';
+import { NotificationsStore } from '../../core/notifications.store';
+import { ToastService } from '../../core/toast.service';
+import { Avatar, HealthSummary, Streak } from '../../core/models';
+import { moodEs } from '../../core/i18n';
+import { CharacterAvatarComponent } from '../../shared/ui/character-avatar.component';
 
-const CATEGORY_ES: Record<string, string> = {
+const BMI_LABEL: Record<string, string> = {
   UNDERWEIGHT: 'Bajo peso',
   NORMAL: 'Peso normal',
   OVERWEIGHT: 'Sobrepeso',
@@ -16,70 +20,123 @@ const CATEGORY_ES: Record<string, string> = {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BottomNavbarComponent],
+  imports: [CommonModule, ReactiveFormsModule, CharacterAvatarComponent],
   template: `
     <div class="page">
-      <h2 class="title">Mi perfil</h2>
-      <p class="who">{{ user()?.name }} · {{ user()?.email }}</p>
+      <section class="card head fade-in">
+        <app-character-avatar *ngIf="avatar" [name]="avatar.characterName" [level]="avatar.level" [percent]="avatar.experience % 100" [size]="128"></app-character-avatar>
+        <div class="who">
+          <h1>{{ user()?.name }}</h1>
+          <p class="muted">{{ user()?.email }} · {{ user()?.age }} años</p>
+          <div class="chips" *ngIf="avatar">
+            <span class="pill pill-violet"><span class="material-icons">stars</span>Nivel {{ avatar.level }}</span>
+            <span class="pill pill-green">{{ avatar.experience }} XP</span>
+            <span class="pill pill-orange" *ngIf="streak"><span class="material-icons">local_fire_department</span>{{ streak.currentDays }} {{ streak.currentDays === 1 ? 'día' : 'días' }} de racha</span>
+            <span class="pill pill-blue">{{ mood(avatar) }}</span>
+          </div>
+          <div class="xp" *ngIf="avatar">
+            <div class="progress"><span [style.width.%]="avatar.experience % 100"></span></div>
+            <small class="muted">{{ avatar.experienceToNextLevel }} XP para el nivel {{ avatar.level + 1 }} · tu compañero es {{ avatar.characterName }}</small>
+          </div>
+        </div>
+        <button type="button" class="btn btn-danger-ghost" (click)="logout()"><span class="material-icons">logout</span>Cerrar sesión</button>
+      </section>
 
-      <div class="card metrics" *ngIf="summary">
-        <div><span>Peso</span><strong>{{ summary.weightKg ?? '—' }} kg</strong></div>
-        <div><span>IMC</span><strong>{{ summary.bmi ?? '—' }}</strong>
-          <small *ngIf="summary.bmiCategory">{{ categoria(summary.bmiCategory) }}</small></div>
-        <div><span>Calorías diarias</span><strong>{{ summary.dailyCalorieTarget ?? '—' }}</strong></div>
+      <div class="grid split body">
+        <form class="card card-pad" [formGroup]="form" (ngSubmit)="save()">
+          <div class="card-head"><h3 class="card-title"><span class="material-icons">tune</span>Datos para tus métricas</h3></div>
+          <p class="muted intro">Con tu altura, sexo y actividad calculamos tu IMC y tus calorías diarias recomendadas.</p>
+
+          <label class="field">
+            <span>Altura (cm)</span>
+            <input type="number" formControlName="heightCm" placeholder="170" [class.invalid]="form.controls.heightCm.invalid && form.controls.heightCm.touched">
+            <small class="err" *ngIf="form.controls.heightCm.invalid && form.controls.heightCm.touched">Ingresa una altura entre 100 y 250 cm</small>
+          </label>
+
+          <div class="field">
+            <span>Sexo</span>
+            <div class="tabs seg">
+              <button type="button" [class.active]="form.value.sex === 'MALE'" (click)="form.patchValue({ sex: 'MALE' })">Hombre</button>
+              <button type="button" [class.active]="form.value.sex === 'FEMALE'" (click)="form.patchValue({ sex: 'FEMALE' })">Mujer</button>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>Nivel de actividad</span>
+            <select formControlName="activityLevel">
+              <option value="SEDENTARY">Sedentario (poco o nada de ejercicio)</option>
+              <option value="LIGHT">Ligero (1-3 días por semana)</option>
+              <option value="MODERATE">Moderado (3-5 días por semana)</option>
+              <option value="ACTIVE">Activo (6-7 días por semana)</option>
+            </select>
+          </label>
+
+          <button class="btn btn-primary" type="submit" [disabled]="form.invalid || saving">{{ saving ? 'Guardando…' : 'Guardar cambios' }}</button>
+        </form>
+
+        <section class="card card-pad metrics" *ngIf="summary">
+          <div class="card-head"><h3 class="card-title"><span class="material-icons">monitor_heart</span>Tus métricas</h3></div>
+
+          <div class="metric">
+            <span class="muted">Peso actual</span>
+            <strong>{{ summary.weightKg ?? '—' }}<small *ngIf="summary.weightKg"> kg</small></strong>
+          </div>
+
+          <div class="metric">
+            <span class="muted">Índice de masa corporal</span>
+            <strong>{{ summary.bmi ?? '—' }}</strong>
+            <span class="pill" *ngIf="summary.bmiCategory as c" [ngClass]="bmiPill(c)">{{ bmiLabel(c) }}</span>
+            <div class="scale" *ngIf="summary.bmi !== null" aria-hidden="true">
+              <div class="bar"><i style="background: #60a5fa; flex: 3.5"></i><i style="background: #34d399; flex: 6.5"></i><i style="background: #fbbf24; flex: 5"></i><i style="background: #f87171; flex: 5"></i></div>
+              <span class="marker" [style.left.%]="bmiPosition"></span>
+            </div>
+          </div>
+
+          <div class="metric">
+            <span class="muted">Calorías diarias recomendadas</span>
+            <strong>{{ summary.dailyCalorieTarget ?? '—' }}<small *ngIf="summary.dailyCalorieTarget"> kcal</small></strong>
+          </div>
+
+          <p class="hint muted" *ngIf="summary.bmi === null">
+            Guarda tus datos y registra tu peso en Progreso para ver tu IMC y tus calorías.
+          </p>
+        </section>
       </div>
-      <p class="hint" *ngIf="summary && summary.bmi === null">
-        Completa tu perfil y registra tu peso en el dashboard para ver tu IMC y tus calorías diarias.
-      </p>
-
-      <form class="card" [formGroup]="form" (ngSubmit)="guardar()">
-        <label>Altura (cm)
-          <input type="number" formControlName="heightCm" />
-        </label>
-        <label>Sexo
-          <select formControlName="sex">
-            <option value="MALE">Hombre</option>
-            <option value="FEMALE">Mujer</option>
-          </select>
-        </label>
-        <label>Nivel de actividad
-          <select formControlName="activityLevel">
-            <option value="SEDENTARY">Sedentario</option>
-            <option value="LIGHT">Ligero</option>
-            <option value="MODERATE">Moderado</option>
-            <option value="ACTIVE">Activo</option>
-          </select>
-        </label>
-        <button type="submit" [disabled]="form.invalid">Guardar</button>
-        <p class="msg" *ngIf="mensaje">{{ mensaje }}</p>
-      </form>
-      <app-bottom-navbar></app-bottom-navbar>
     </div>
   `,
   styles: [`
-    .page { min-height: 100vh; padding: 1.5rem 1.5rem 6rem; background: #f4e9e6; box-sizing: border-box; max-width: 600px; margin: 0 auto; }
-    .title { text-align: center; font-size: 28px; font-weight: bold; color: #212529; margin-bottom: 4px; }
-    .who { text-align: center; color: #555; }
-    .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.1); display: flex; flex-direction: column; gap: 12px; }
-    .metrics { flex-direction: row; justify-content: space-around; text-align: center; }
-    .metrics div { display: flex; flex-direction: column; }
-    .metrics span { color: #777; font-size: 13px; }
-    .metrics strong { font-size: 22px; color: #4caf50; }
-    label { display: flex; flex-direction: column; gap: 4px; font-weight: 500; }
-    input, select { padding: 8px 10px; border-radius: 8px; border: 1px solid #ccc; }
-    button { padding: 10px; border: none; border-radius: 8px; background: #4caf50; color: #fff; cursor: pointer; }
-    button:disabled { opacity: .5; cursor: default; }
-    .hint, .msg { color: #666; text-align: center; }
+    .head { display: flex; align-items: center; gap: 24px; padding: 24px; flex-wrap: wrap; }
+    .who { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 8px; }
+    h1 { font-size: 28px; font-weight: 800; }
+    .chips .material-icons { font-size: 14px; }
+    .xp { max-width: 420px; display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+    .body { margin-top: 16px; align-items: start; }
+    .intro { font-size: 14px; margin: -6px 0 16px; }
+    .seg { display: flex; }
+    .seg button { flex: 1; }
+    .metric { padding: 14px 0; border-bottom: 1px solid #f1f4f8; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+    .metric:last-of-type { border-bottom: 0; }
+    .metric strong { font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
+    .metric small { font-size: 14px; color: var(--muted); font-weight: 600; }
+    .scale { position: relative; width: 100%; margin-top: 10px; }
+    .bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; gap: 2px; }
+    .bar i { display: block; }
+    .marker { position: absolute; top: -5px; width: 4px; height: 20px; border-radius: 2px; background: #0f172a; transform: translateX(-50%); box-shadow: 0 0 0 2px #fff; }
+    .hint { font-size: 14px; margin-top: 8px; }
   `]
 })
 export class ProfileComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly api = inject(ApiService);
   private readonly auth = inject(AuthService);
+  private readonly store = inject(NotificationsStore);
+  private readonly toast = inject(ToastService);
 
   readonly user = this.auth.user;
-  summary?: HealthSummary;
-  mensaje = '';
+  summary: HealthSummary | null = null;
+  avatar: Avatar | null = null;
+  streak: Streak | null = null;
+  saving = false;
 
   readonly form = this.fb.nonNullable.group({
     heightCm: [170, [Validators.required, Validators.min(100), Validators.max(250)]],
@@ -88,30 +145,64 @@ export class ProfileComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.api.getProfile().subscribe(summary => {
-      this.summary = summary;
-      if (summary.heightCm && summary.sex && summary.activityLevel) {
-        this.form.patchValue({
-          heightCm: summary.heightCm,
-          sex: summary.sex,
-          activityLevel: summary.activityLevel
-        });
+    forkJoin({
+      summary: this.safe(this.api.getProfile()),
+      avatar: this.safe(this.api.getAvatar()),
+      streak: this.safe(this.api.getStreak())
+    }).subscribe(r => {
+      this.summary = r.summary;
+      this.avatar = r.avatar;
+      this.streak = r.streak;
+      const s = r.summary;
+      if (s?.heightCm && s.sex && s.activityLevel) {
+        this.form.patchValue({ heightCm: s.heightCm, sex: s.sex, activityLevel: s.activityLevel });
       }
     });
   }
 
-  categoria(code: string): string {
-    return CATEGORY_ES[code] ?? code;
+  private safe<T>(source: Observable<T>): Observable<T | null> {
+    return source.pipe(catchError(() => of(null)));
   }
 
-  guardar(): void {
-    this.mensaje = '';
+  mood(a: Avatar): string {
+    return moodEs(a.mood);
+  }
+
+  bmiLabel(code: string): string {
+    return BMI_LABEL[code] ?? code;
+  }
+
+  bmiPill(code: string): string {
+    return code === 'NORMAL' ? 'pill-green' : code === 'UNDERWEIGHT' ? 'pill-blue' : code === 'OVERWEIGHT' ? 'pill-orange' : 'pill-red';
+  }
+
+  /** Position of the marker on a 15 to 35 BMI scale. */
+  get bmiPosition(): number {
+    const bmi = this.summary?.bmi ?? 0;
+    return Math.min(100, Math.max(0, ((bmi - 15) / 20) * 100));
+  }
+
+  save(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.saving = true;
     this.api.updateProfile(this.form.getRawValue()).subscribe({
       next: summary => {
         this.summary = summary;
-        this.mensaje = 'Perfil guardado';
+        this.saving = false;
+        this.toast.success('Perfil actualizado');
       },
-      error: () => (this.mensaje = 'No se pudo guardar. Revisa los datos.')
+      error: () => {
+        this.saving = false;
+        this.toast.error('No se pudo guardar. Revisa los datos.');
+      }
     });
+  }
+
+  logout(): void {
+    this.store.clear();
+    this.auth.logout();
   }
 }

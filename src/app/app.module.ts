@@ -4,8 +4,6 @@ import { RouterModule } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { AppComponent } from './app.component';
-import { MatToolbar } from '@angular/material/toolbar';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { authInterceptor } from './core/auth.interceptor';
 
 @NgModule({
@@ -14,9 +12,7 @@ import { authInterceptor } from './core/auth.interceptor';
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(routes),
-    MatToolbar,
-    BrowserAnimationsModule
+    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })
   ],
   providers: [provideHttpClient(withInterceptors([authInterceptor]))],
   bootstrap: [AppComponent]
