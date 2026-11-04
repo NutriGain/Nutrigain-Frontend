@@ -1,8 +1,0 @@
-<mat-card class="avatar-card">
-  <div *ngIf="avatar">
-    <img [src]="'assets/' + avatar.imageUrl" (error)="fallbackImage($event)" alt="Avatar" />
-    <p><strong>{{ avatar.characterName }}</strong></p>
-    <p><strong>Nivel:</strong> {{ avatar.level }}</p>
-    <p><strong>Estado de ánimo:</strong> {{ moodEs(avatar.mood) }}</p>
-  </div>
-</mat-card>

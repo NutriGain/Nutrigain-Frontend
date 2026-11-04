@@ -25,7 +25,6 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css"
             ]
           },
@@ -35,13 +34,13 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError":   "1MB"
+                  "maximumError": "1MB"
                 },
                 {
                   "type": "bundle",
                   "name": "styles",
-                  "maximumWarning": "8kB",
-                  "maximumError":   "12kB"
+                  "maximumWarning": "14kB",
+                  "maximumError": "24kB"
                 }
               ],
               "outputHashing": "all"
@@ -84,7 +83,6 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css"
             ]
           }

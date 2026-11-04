@@ -1,149 +1,102 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/auth.service';
-import { MatCard } from '@angular/material/card';
-import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatCard,
-    MatFormField,
-    MatInput,
-    MatButton,
-    MatError,
-    MatLabel
-  ],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  template: `
+    <div class="auth">
+      <section class="auth-hero">
+        <div class="brand"><span class="logo">N</span>NutriGain</div>
+        <h1>Entrena a tu manera.<br>Mejora cada día.</h1>
+        <p>Elige tu camino, sigue tu rutina y tu plan nutricional, y supera el reto diario extremo junto a tu personaje.</p>
+        <ul>
+          <li><span class="material-icons">fitness_center</span>Rutinas semanales según tu camino</li>
+          <li><span class="material-icons">restaurant</span>Plan nutricional personalizado</li>
+          <li><span class="material-icons">bolt</span>Retos y logros que te mantienen motivado</li>
+        </ul>
+      </section>
+
+      <section class="auth-panel">
+        <form class="auth-card fade-in" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <h2>Bienvenido de nuevo</h2>
+          <p class="muted">Inicia sesión para continuar con tu progreso</p>
+
+          <label class="field">
+            <span>Correo electrónico</span>
+            <input type="email" formControlName="email" autocomplete="email" placeholder="tu@correo.com"
+                   [class.invalid]="invalid('email')">
+            <small class="err" *ngIf="invalid('email')">Ingresa un correo válido</small>
+          </label>
+
+          <label class="field">
+            <span>Contraseña</span>
+            <div class="input-wrap">
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password" autocomplete="current-password"
+                     placeholder="Tu contraseña" [class.invalid]="invalid('password')">
+              <button class="toggle" type="button" (click)="showPassword = !showPassword"
+                      [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+              </button>
+            </div>
+            <small class="err" *ngIf="invalid('password')">La contraseña debe tener al menos 6 caracteres</small>
+          </label>
+
+          <div class="alert alert-error" role="alert" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+          <button class="btn btn-primary btn-lg" type="submit" [disabled]="isLoading">
+            {{ isLoading ? 'Ingresando…' : 'Iniciar sesión' }}
+          </button>
+          <p class="auth-switch">¿No tienes cuenta? <a routerLink="/register">Crear cuenta</a></p>
+        </form>
+      </section>
+    </div>
+  `
 })
 export class LoginComponent implements OnInit {
   form!: FormGroup;
   errorMessage = '';
   isLoading = false;
+  showPassword = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private auth: AuthService,
-    private router: Router
-  ) {}
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.auth.isLoggedIn()) {
       this.router.navigate(['/dashboard']);
       return;
     }
-
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
-
-    // Animación de entrada para los campos
-    this.animateFormFields();
   }
 
-  private animateFormFields() {
-    // Pequeño delay para que las animaciones CSS funcionen correctamente
-    setTimeout(() => {
-      const fields = document.querySelectorAll('.mat-mdc-form-field');
-      fields.forEach((field, index) => {
-        setTimeout(() => {
-          field.classList.add('animate-in');
-        }, index * 100);
-      });
-    }, 100);
+  invalid(name: string): boolean {
+    const c = this.form.get(name);
+    return !!c && c.invalid && (c.touched || c.dirty);
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.form.invalid) {
-      this.markFormGroupTouched();
-      this.shakeCard();
+      this.form.markAllAsTouched();
       return;
     }
-
     this.isLoading = true;
     this.errorMessage = '';
-
     const { email, password } = this.form.value;
-
     this.auth.signIn(email, password).subscribe({
-      next: () => {
-        this.showSuccessAnimation();
-        setTimeout(() => this.router.navigate(['/dashboard']), 800);
-      },
-      error: (error) => {
+      next: () => this.router.navigate(['/dashboard']),
+      error: error => {
         this.isLoading = false;
         this.errorMessage = error?.status === 401 || error?.status === 400
-          ? 'Credenciales incorrectas. Verifica tu email y contraseña.'
-          : 'Error de conexión. Intenta nuevamente.';
-        this.shakeCard();
+          ? 'Correo o contraseña incorrectos.'
+          : 'No pudimos conectar con el servidor. Intenta nuevamente.';
       }
     });
-  }
-
-  private markFormGroupTouched() {
-    Object.keys(this.form.controls).forEach(key => {
-      this.form.get(key)?.markAsTouched();
-    });
-  }
-
-  private showSuccessAnimation() {
-    const card = document.querySelector('.login-card');
-    if (card) {
-      card.classList.add('success-animation');
-
-      // Cambiar temporalmente el texto del botón
-      const button = document.querySelector('.login-button span');
-      if (button) {
-        button.textContent = '✅ ¡Bienvenido!';
-      }
-    }
-  }
-
-  private shakeCard() {
-    const card = document.querySelector('.login-card');
-    if (card) {
-      card.classList.add('shake-animation');
-
-      // Remover la clase después de la animación
-      setTimeout(() => {
-        card.classList.remove('shake-animation');
-      }, 500);
-    }
-  }
-
-  irARegistro() {
-    // Animación de salida
-    const card = document.querySelector('.login-card');
-    if (card) {
-      card.classList.add('slide-out');
-
-      setTimeout(() => {
-        this.router.navigate(['/register']);
-      }, 300);
-    }
-  }
-
-  // Método para manejar el focus en los campos
-  onFieldFocus(fieldName: string) {
-    const field = document.querySelector(`[formControlName="${fieldName}"]`);
-    if (field) {
-      field.parentElement?.classList.add('focused');
-    }
-  }
-
-  // Método para manejar cuando se quita el focus
-  onFieldBlur(fieldName: string) {
-    const field = document.querySelector(`[formControlName="${fieldName}"]`);
-    if (field) {
-      field.parentElement?.classList.remove('focused');
-    }
   }
 }

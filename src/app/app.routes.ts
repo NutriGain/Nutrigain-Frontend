@@ -1,83 +1,74 @@
 import { Routes } from '@angular/router';
-import { ManualPlanComponent } from './domains/manual-plan/manual-plan.component';
-import { MealDetailComponent } from './domains/meal-detail/meal-detail.component';
-import { NutricionComponent } from './domains/nutrition/components/nutricion/nutricion.component';
 import { authGuard } from './core/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: 'login',
-    loadComponent: () =>
-      import('./domains/user/components/login/login.component').then(m => m.LoginComponent)
+    title: 'Iniciar sesión | NutriGain',
+    loadComponent: () => import('./domains/user/components/login/login.component').then(m => m.LoginComponent)
   },
   {
     path: 'register',
-    loadComponent: () =>
-      import('./domains/user/components/register/register.component').then(m => m.RegisterComponent)
-  },
-  { path: 'nutricionAutomatic', component: NutricionComponent, canActivate: [authGuard] },
-  { path: 'manual', component: ManualPlanComponent, canActivate: [authGuard] },
-  { path: 'detail/:id', component: MealDetailComponent, canActivate: [authGuard] },
-  {
-    path: 'dashboard',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./domains/user/components/dashboard/dashboard.component').then(m => m.DashboardComponent)
+    title: 'Crear cuenta | NutriGain',
+    loadComponent: () => import('./domains/user/components/register/register.component').then(m => m.RegisterComponent)
   },
   {
-    path: 'rutinas',
+    path: '',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./domains/fitness/components/rutinas/rutinas.component').then(m => m.RutinasComponent)
+    loadComponent: () => import('./shared/layout/shell.component').then(m => m.ShellComponent),
+    children: [
+      {
+        path: 'dashboard',
+        title: 'Inicio | NutriGain',
+        loadComponent: () => import('./domains/user/components/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      },
+      {
+        path: 'rutinas',
+        title: 'Rutinas | NutriGain',
+        loadComponent: () => import('./domains/fitness/components/rutinas/rutinas.component').then(m => m.RutinasComponent)
+      },
+      {
+        path: 'nutricion',
+        title: 'Nutrición | NutriGain',
+        loadComponent: () => import('./domains/nutrition/nutrition.component').then(m => m.NutritionComponent)
+      },
+      {
+        path: 'nutricion/comida/:id',
+        title: 'Comida | NutriGain',
+        loadComponent: () => import('./domains/nutrition/meal-detail.component').then(m => m.MealDetailComponent)
+      },
+      {
+        path: 'retos',
+        title: 'Retos | NutriGain',
+        loadComponent: () => import('./domains/gamification/components/retos/retos.component').then(m => m.RetosComponent)
+      },
+      {
+        path: 'progreso',
+        title: 'Progreso | NutriGain',
+        loadComponent: () => import('./domains/fitness/components/progreso/progreso.component').then(m => m.ProgresoComponent)
+      },
+      {
+        path: 'ranking',
+        title: 'Ranking | NutriGain',
+        loadComponent: () => import('./domains/social/ranking.component').then(m => m.RankingComponent)
+      },
+      {
+        path: 'logros',
+        title: 'Logros | NutriGain',
+        loadComponent: () => import('./domains/achievements/achievements.component').then(m => m.AchievementsComponent)
+      },
+      {
+        path: 'perfil',
+        title: 'Perfil | NutriGain',
+        loadComponent: () => import('./domains/profile/profile.component').then(m => m.ProfileComponent)
+      }
+    ]
   },
-  {
-    path: 'nutricion',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./domains/home/home.component').then(m => m.HomeComponent)
-  },
-  {
-    path: 'progreso',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./domains/fitness/components/progreso/progreso.component').then(m => m.ProgresoComponent)
-  },
-  {
-    path: 'avatar',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./domains/gamification/components/avatar/avatar.component').then(m => m.AvatarComponent)
-  },
-  {
-    path: 'retos',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./domains/gamification/components/retos/retos.component').then(m => m.RetosComponent)
-  },
-  {
-    path: 'resumen',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./domains/user/components/resumen/resumen.component').then(m => m.ResumenComponent)
-  },
-  {
-    path: 'perfil',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./domains/profile/profile.component').then(m => m.ProfileComponent)
-  },
-  {
-    path: 'logros',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./domains/achievements/achievements.component').then(m => m.AchievementsComponent)
-  },
-  {
-    path: 'ranking',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./domains/social/ranking.component').then(m => m.RankingComponent)
-  },
+  // Old routes kept as redirects so existing links keep working.
+  { path: 'nutricionAutomatic', redirectTo: 'nutricion', pathMatch: 'full' },
+  { path: 'manual', redirectTo: 'nutricion', pathMatch: 'full' },
+  { path: 'avatar', redirectTo: 'perfil', pathMatch: 'full' },
+  { path: 'resumen', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'dashboard' }
 ];

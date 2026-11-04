@@ -176,3 +176,11 @@ export interface Competitor {
   following: boolean;
   me: boolean;
 }
+
+export interface FitnessPath {
+  id: number;
+  code: string;
+  name: string;
+  description: string;
+  imageUrl: string | null;
+}
