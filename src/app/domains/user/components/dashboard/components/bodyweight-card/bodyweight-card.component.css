@@ -1,0 +1,75 @@
+/* bodyweight-card.component.css */
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.main-card {
+  background: #fff !important;
+  border-radius: 16px !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e8e0dd !important;
+  margin: 0 !important;
+  overflow-x: auto;
+}
+
+.main-card h3 {
+  color: #2c2c2c;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem !important;
+}
+
+.responsive-chart-container {
+  width: 100%;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+
+/* Gráfico responsivo */
+.responsive-chart-container ngx-charts-line-chart {
+  width: 100% !important;
+  display: block;
+}
+
+/* Estilos específicos para el gráfico */
+:host ::ng-deep .ngx-charts {
+  background: transparent !important;
+}
+
+:host ::ng-deep .line-chart .line-series .line {
+  stroke-width: 3px;
+}
+
+:host ::ng-deep .line-chart .line-series .line-highlight {
+  stroke-width: 4px;
+}
+
+:host ::ng-deep .line-chart .circle {
+  r: 4;
+  stroke-width: 2;
+  stroke: #fff;
+}
+
+:host ::ng-deep .line-chart .circle:hover {
+  r: 6;
+}
+
+:host ::ng-deep .tick text {
+  fill: #666;
+  font-size: 11px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+}

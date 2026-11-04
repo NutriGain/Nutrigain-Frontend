@@ -1,0 +1,19 @@
+<!-- HTML actualizado (botón fuera del home-card) -->
+<div class="home-container">
+  <div class="home-card">
+    <h1 class="main-title">Plan Nutricional</h1>
+
+    <div class="cards-wrapper">
+      <div class="option-card" (click)="autoPlan()">
+        <div class="card-text">Generar plan automáticamente</div>
+      </div>
+
+      <div class="separator-text">- 0 -</div>
+
+      <div class="option-card" (click)="goToManual()">
+        <div class="card-text">Crea tu propio plan</div>
+      </div>
+    </div>
+  </div>
+  <app-bottom-navbar></app-bottom-navbar>
+</div>

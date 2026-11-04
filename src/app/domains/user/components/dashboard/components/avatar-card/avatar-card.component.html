@@ -1,0 +1,7 @@
+<mat-card class="avatar-card">
+  <div *ngIf="avatar">
+    <img [src]="'assets/' + avatar.imagen" alt="Avatar" />
+    <p><strong>Nivel:</strong> {{ avatar.nivel }}</p>
+    <p><strong>Estado de ánimo:</strong> {{ avatar.estadoAnimo }}</p>
+  </div>
+</mat-card>

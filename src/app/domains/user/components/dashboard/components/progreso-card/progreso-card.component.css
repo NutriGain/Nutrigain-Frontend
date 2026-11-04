@@ -1,0 +1,10 @@
+.achievement-card {
+  padding: 16px;
+  background-color: #fff;
+}
+
+.caption {
+  text-align: center;
+  font-size: 0.95rem;
+  margin-top: 8px;
+}

@@ -1,0 +1,31 @@
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 16px; /* Reducir padding */
+  border-radius: 25px; /* Reducir border-radius */
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  bottom: 20px;
+  left: 50%; /* Centrar horizontalmente */
+  transform: translateX(-50%); /* Centrar horizontalmente */
+  width: auto; /* Ancho automático en lugar de left/right */
+  max-width: 300px; /* Limitar ancho máximo */
+  min-width: 250px; /* Ancho mínimo */
+  z-index: 1000;
+}
+
+/* Hacer los botones más pequeños */
+.bottom-nav button {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+}
+
+/* Hacer los iconos más pequeños */
+.bottom-nav mat-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+}

@@ -1,0 +1,11 @@
+<div class="avatar-wrapper" *ngIf="avatar">
+  <h2 class="titulo">Mi Avatar</h2>
+
+  <div class="avatar-card">
+    <img [src]="'assets/' + avatar.imagen" alt="Avatar" class="avatar-img" />
+    <div class="avatar-info">
+      <p><strong>Nivel:</strong> {{ avatar.nivel }}</p>
+      <p><strong>Estado de ánimo:</strong> {{ avatar.estadoAnimo }}</p>
+    </div>
+  </div>
+</div>

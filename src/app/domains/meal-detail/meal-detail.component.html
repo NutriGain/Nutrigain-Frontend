@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="meal-card" *ngIf="meal">
+    <h2>Meal Info</h2>
+
+    <div class="meal-content">
+      <div class="meal-image">
+        <img [src]="meal.image" [alt]="meal.name" class="detail-img">
+      </div>
+
+      <div class="meal-info">
+        <h3>{{ meal.name }}</h3>
+        <div class="meal-type-badge">{{ meal.type }}</div>
+
+        <h4>Nutritional Info</h4>
+        <div class="nutrition-grid">
+          <div class="nutrition-item">
+            <label>Calories:</label>
+            <span>{{ meal.calories }}</span>
+          </div>
+          <div class="nutrition-item">
+            <label>Proteins:</label>
+            <span>{{ meal.proteins }}g</span>
+          </div>
+          <div class="nutrition-item">
+            <label>Carbohydrates:</label>
+            <span>{{ meal.carbohydrates }}g</span>
+          </div>
+          <div class="nutrition-item">
+            <label>Fats:</label>
+            <span>{{ meal.fats }}g</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div class="back-button-container">
+    <button class="back-btn" (click)="goBack()">
+      <span>← Volver</span>
+    </button>
+  </div>
+</div>

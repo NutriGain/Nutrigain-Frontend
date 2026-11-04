@@ -1,0 +1,14 @@
+<div class="rutinas-wrapper">
+  <h2 class="titulo">Mis Rutinas</h2>
+
+  <div *ngFor="let rutina of rutinas" class="rutina-card">
+    <h3 class="dia">{{ rutina.dia }}</h3>
+    <ul class="lista-ejercicios">
+      <li *ngFor="let e of rutina.ejercicios">
+        <span class="nombre">{{ e.nombre }}</span>
+        <span class="reps">{{ e.repeticiones }}</span>
+      </li>
+    </ul>
+  </div>
+  <app-bottom-navbar></app-bottom-navbar>
+</div>

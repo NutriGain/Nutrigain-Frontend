@@ -1,0 +1,18 @@
+<h2>Resumen General</h2>
+
+<p><strong>Usuario:</strong> {{ user?.nombre }}</p>
+<p><strong>Nivel actual:</strong> {{ avatar?.nivel }}</p>
+<p><strong>Progreso semanal:</strong> {{ progreso }}%</p>
+
+<div *ngIf="ultimaComida">
+  <p><strong>Última comida:</strong> {{ ultimaComida.tipo }} - {{ ultimaComida.descripcion }}</p>
+</div>
+
+<div *ngIf="reto">
+  <p><strong>Reto sugerido:</strong> {{ reto.descripcion }} ({{ reto.nivelDificultad }})</p>
+</div>
+
+<div *ngIf="progresoCompleto" class="logro-container">
+  <h3 class="felicitacion">🎉 ¡Felicidades, completaste tu semana! 🎉</h3>
+  <img src="assets/medalla.png" alt="Medalla" class="medalla" />
+</div>

@@ -1,0 +1,444 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "nombre": "Nicolás Vera",
+      "email": "nicolas@example.com",
+      "password": "123456",
+      "edad": 19,
+      "caminoSeleccionado": 1
+    },
+    {
+      "id": 2,
+      "nombre": "Laura Ramos",
+      "email": "laura@example.com",
+      "password": "abcdef",
+      "edad": 22,
+      "caminoSeleccionado": 2
+    },
+    {
+      "id": 3,
+      "nombre": "Carlos Díaz",
+      "email": "carlos@example.com",
+      "password": "pass789",
+      "edad": 28,
+      "caminoSeleccionado": 3
+    }
+  ],
+  "fitnessPaths": [
+    {
+      "id": 1,
+      "nombre": "Musculación",
+      "descripcion": "Enfocado en ganar masa muscular",
+      "imagen": "musculacion.png"
+    },
+    {
+      "id": 2,
+      "nombre": "Agilidad",
+      "descripcion": "Mejora tu velocidad y coordinación",
+      "imagen": "agilidad.png"
+    },
+    {
+      "id": 3,
+      "nombre": "Yoga",
+      "descripcion": "Flexibilidad, balance y enfoque",
+      "imagen": "yoga.png"
+    }
+  ],
+  "rutinas": [
+    {
+      "id": 1,
+      "userId": 1,
+      "dia": "Lunes",
+      "ejercicios": [
+        { "nombre": "Sentadillas", "repeticiones": "3x10" },
+        { "nombre": "Press banca", "repeticiones": "3x8" }
+      ]
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "dia": "Miércoles",
+      "ejercicios": [
+        { "nombre": "Peso muerto", "repeticiones": "4x6" },
+        { "nombre": "Dominadas", "repeticiones": "3x10" }
+      ]
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "dia": "Viernes",
+      "ejercicios": [
+        { "nombre": "Burpees", "repeticiones": "4x12" },
+        { "nombre": "Sprints", "repeticiones": "10x30m" }
+      ]
+    }
+  ],
+  "progresos": [
+    {
+      "userId": 1,
+      "semana": 1,
+      "nivel": 1,
+      "porcentajeCompletado": 25,
+      "pesoObjetivo": 68
+    },
+    {
+      "userId": 1,
+      "semana": 2,
+      "nivel": 2,
+      "porcentajeCompletado": 40,
+      "pesoObjetivo": 68
+    },
+    {
+      "userId": 2,
+      "semana": 1,
+      "nivel": 1,
+      "porcentajeCompletado": 30,
+      "pesoObjetivo": 60
+    }
+  ],
+  "pesos": [
+    { "userId": 1, "semana": 1, "peso": 70 },
+    { "userId": 1, "semana": 2, "peso": 71.5 },
+    { "userId": 1, "semana": 3, "peso": 70.8 },
+    { "userId": 1, "semana": 4, "peso": 69.5 },
+    { "userId": 1, "semana": 5, "peso": 67.2 },
+    { "userId": 1, "semana": 6, "peso": 66.2 }
+  ],
+  "streaks": [
+    { "userId": 1, "diasSeguidos": 10, "ultimaFecha": "2025-05-14" },
+    { "userId": 2, "diasSeguidos": 5, "ultimaFecha": "2025-05-13" }
+  ],
+  "planesNutricionales": [
+    {
+      "id": 1,
+      "userId": 1,
+      "dia": "Lunes",
+      "comidas": [
+        { "tipo": "Desayuno", "descripcion": "Avena con plátano" },
+        { "tipo": "Almuerzo", "descripcion": "Pechuga de pollo con arroz integral" },
+        { "tipo": "Cena", "descripcion": "Ensalada con atún" }
+      ]
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "dia": "Martes",
+      "comidas": [
+        { "tipo": "Desayuno", "descripcion": "Smoothie de frutas" },
+        { "tipo": "Almuerzo", "descripcion": "Ensalada con quinoa y huevo" },
+        { "tipo": "Cena", "descripcion": "Sopa de verduras" }
+      ]
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "dia": "Miercoles",
+      "comidas": [
+        { "tipo": "Desayuno", "descripcion": "Smoothie de frutas" },
+        { "tipo": "Almuerzo", "descripcion": "Ensalada con quinoa y huevo" },
+        { "tipo": "Cena", "descripcion": "Sopa de verduras" }
+      ]
+    }
+  ],
+  "NutricionalManual": [
+    {
+      "id": 1,
+      "name": "Huevos revueltos con tostadas",
+      "type": "Desayuno",
+      "calories": 350,
+      "proteins": 20,
+      "carbohydrates": 40,
+      "fats": 10,
+      "image": "https://comedera.com/wp-content/uploads/sites/9/2022/12/tosta-de-huevo-revuelto.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Avena con plátano",
+      "type": "Desayuno",
+      "calories": 300,
+      "proteins": 12,
+      "carbohydrates": 50,
+      "fats": 8,
+      "image": "https://campograndeperu.com/wp-content/uploads/2024/02/avena-con-platano.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Pollo a la plancha con arroz",
+      "type": "Almuerzo",
+      "calories": 600,
+      "proteins": 35,
+      "carbohydrates": 50,
+      "fats": 20,
+      "image": "https://cloudfront-us-east-1.images.arcpublishing.com/infobae/H6BF45RGRNBDDI6NYOP5LAMWAI.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Ensalada de atún",
+      "type": "Almuerzo",
+      "calories": 450,
+      "proteins": 30,
+      "carbohydrates": 25,
+      "fats": 18,
+      "image": "https://recetas.encolombia.com/wp-content/uploads/2025/01/Ensalada-de-atun-con-aguacate.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Sopa de verduras",
+      "type": "Cena",
+      "calories": 280,
+      "proteins": 10,
+      "carbohydrates": 30,
+      "fats": 5,
+      "image": "https://mejorconsalud.as.com/wp-content/uploads/2018/07/sopa-verduras-1.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Sandwich de pavo",
+      "type": "Cena",
+      "calories": 350,
+      "proteins": 20,
+      "carbohydrates": 35,
+      "fats": 10,
+      "image": "https://www.lacocinasana.com/static/59bdd63adf529051381443d3480e28dd/a892d/pechuga_pavo_16043349ed.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Yogurt con granola",
+      "type": "Snack",
+      "calories": 200,
+      "proteins": 8,
+      "carbohydrates": 25,
+      "fats": 5,
+      "image": "https://b3tterfoods.com/cdn/shop/articles/bowl_de_granola_con_yogurt_y_frutas_1200x1200.jpg?v=1698767246"
+    },
+    {
+      "id": 8,
+      "name": "Fruta picada",
+      "type": "Snack",
+      "calories": 150,
+      "proteins": 2,
+      "carbohydrates": 30,
+      "fats": 1,
+      "image": "https://dabbawala.com.mx/wp-content/uploads/2023/03/mix-frutas-1.jpg"
+    },
+    {
+      "id": 9,
+      "name": "Tostadas con mantequilla de maní y banana",
+      "type": "Desayuno",
+      "calories": 360,
+      "proteins": 12,
+      "carbohydrates": 45,
+      "fats": 14,
+      "image": "https://misantoremedio.com/cdn/shop/articles/Screen_Shot_2022-06-01_at_2.08.33_PM.png?v=1654106931&width=1100"
+    },
+    {
+      "id": 10,
+      "name": "Chía pudding con frutos rojos",
+      "type": "Desayuno",
+      "calories": 280,
+      "proteins": 10,
+      "carbohydrates": 30,
+      "fats": 12,
+      "image": "https://okdiario.com/img/recetas/2017/10/01/pudding-de-chia.jpg"
+    },
+    {
+      "id": 11,
+      "name": "Arroz chaufa de pollo",
+      "type": "Almuerzo",
+      "calories": 700,
+      "proteins": 32,
+      "carbohydrates": 60,
+      "fats": 25,
+      "image": "https://comedera.com/wp-content/uploads/sites/9/2023/05/shutterstock_2073860435.jpg"
+    },
+    {
+      "id": 12,
+      "name": "Tallarines rojos con carne",
+      "type": "Almuerzo",
+      "calories": 650,
+      "proteins": 28,
+      "carbohydrates": 70,
+      "fats": 22,
+      "image": "https://cocina-casera.com/wp-content/uploads/2018/04/tallarines-rojos.jpg"
+    },
+    {
+      "id": 13,
+      "name": "Crema de zapallo con huevo sancochado",
+      "type": "Cena",
+      "calories": 320,
+      "proteins": 16,
+      "carbohydrates": 20,
+      "fats": 12,
+      "image": "https://cocinaperuana.espaciolatino.com/recetas-de-sopas/img600/crema-zapallo-huevo.jpg"
+    },
+    {
+      "id": 14,
+      "name": "Tortilla de espinaca y queso",
+      "type": "Cena",
+      "calories": 340,
+      "proteins": 20,
+      "carbohydrates": 15,
+      "fats": 18,
+      "image": "https://images.aws.nestle.recipes/original/2024_10_14T08_58_48_badun_images.badun.es_tortilla_de_espinacas_y_queso_fresco.jpg"
+    },
+    {
+      "id": 15,
+      "name": "Galletas integrales con mantequilla de maní",
+      "type": "Snack",
+      "calories": 230,
+      "proteins": 8,
+      "carbohydrates": 22,
+      "fats": 13,
+      "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjjGaiwSafXfdzJnSbZRsCfkW-0yp_7pD6-dNWvLk53jhbpyPr8c4nYr2zKxp1RHZ_299BlNajKmb6rTg6Vbxqpo7ABSbhkHSNgB52P6ek1Jz_yi6baDwa8Avz6JVZNDQtX5TDWLADgIzQ/s1600/galletas-fruta-crema-cacahuete-02b.jpg"
+    },
+    {
+      "id": 16,
+      "name": "Manzana con canela y yogur",
+      "type": "Snack",
+      "calories": 180,
+      "proteins": 6,
+      "carbohydrates": 28,
+      "fats": 5,
+      "image": "https://www.justspices.es/media/recipe/resized/510x510/recipe/Mix_para_porridge_yogur_con_manzana_y_canela-5.jpg"
+    }
+  ],
+  "avatares": [
+    {
+      "userId": 1,
+      "nivel": 1,
+      "estadoAnimo": "Motivado",
+      "imagen": "avatar1.png"
+    },
+    {
+      "userId": 2,
+      "nivel": 2,
+      "estadoAnimo": "Enérgica",
+      "imagen": "avatar2.png"
+    }
+  ],
+  "mensajesMotivacionales": [
+    { "id": 1, "texto": "¡Sigue así, estás rompiéndola!" },
+    { "id": 2, "texto": "Recuerda por qué comenzaste." },
+    { "id": 3, "texto": "Eres más fuerte de lo que crees." },
+    { "id": 4, "texto": "Cada paso cuenta, no te detengas." },
+    { "id": 5, "texto": "El esfuerzo de hoy es el logro de mañana." }
+  ],
+  "retos": [
+    { "id": 1,
+      "titulo": "Ejercicio",
+      "descripcion": "Haz 50 sentadillas hoy",
+      "nivelDificultad": "Difícil",
+      "categoria": "Ejercicio",
+      "completado": false
+    },
+    { "id": 2,
+      "titulo": "Nutrición",
+      "descripcion": "Toma 2L de agua durante el día",
+      "nivelDificultad": "Fácil",
+      "categoria": "Nutricion",
+      "completado": false
+    },
+    { "id": 3,
+      "titulo": "Ejercicio",
+      "descripcion": "30 minutos de cardio",
+      "nivelDificultad": "Avanzado",
+      "categoria": "Ejercicio",
+      "completado": false
+    },
+    { "id": 4,
+      "titulo": "Mindfulness",
+      "descripcion": "10 minutos de meditación",
+      "nivelDificultad": "Fácil",
+      "categoria": "Mindfulness",
+      "completado": false
+    },
+    { "id": 5,
+      "titulo": "Ejercicio",
+      "descripcion": "Haz 3 series de planchas",
+      "nivelDificultad": "Intermedio",
+      "categoria": "Ejercicio",
+      "completado": false
+    },
+    {
+    "id": 6,
+    "titulo": "Hidratación Matutina",
+    "descripcion": "Bebe un vaso de agua nada más levantarte para activar tu metabolismo",
+    "nivelDificultad": "Fácil",
+    "categoria": "Nutrición",
+    "completado": false
+    },
+    {
+    "id": 7,
+    "titulo": "Caminar 10,000 Pasos",
+    "descripcion": "Alcanza los 10,000 pasos durante el día, puedes usar las escaleras o caminar durante las llamadas",
+    "nivelDificultad": "Medio",
+    "categoria": "Ejercicio",
+    "completado": false
+    },
+    {
+    "id": 8,
+    "titulo": "Meditación de 5 Minutos",
+    "descripcion": "Dedica 5 minutos a la meditación o respiración consciente para reducir el estrés",
+    "nivelDificultad": "Fácil",
+    "categoria": "Mindfulness",
+    "completado": false
+    },
+    {
+    "id": 9,
+    "titulo": "Ejercicio de Fuerza",
+    "descripcion": "Realiza 3 series de 15 flexiones, sentadillas y planchas",
+    "nivelDificultad": "Medio",
+    "categoria": "Ejercicio",
+    "completado": false
+    },
+    {
+    "id": 10,
+    "titulo": "Técnica Pomodoro",
+    "descripcion": "Trabaja durante 25 minutos concentrado y descansa 5 minutos. Repite 4 veces",
+    "nivelDificultad": "Fácil",
+    "categoria": "Productividad",
+    "completado": false
+    },
+    {
+    "id": 11,
+    "titulo": "Comida Sin Pantallas",
+    "descripcion": "Come al menos una comida del día sin mirar el teléfono, TV o computadora",
+    "nivelDificultad": "Medio",
+    "categoria": "Mindfulness",
+    "completado": false
+     },
+    {
+    "id": 12,
+    "titulo": "Entrenamiento HIIT",
+    "descripción": "Realiza 20 minutos de entrenamiento de alta intensidad con intervalos",
+    "nivelDificultad": "Difícil",
+    "categoria": "Ejercicio",
+    "completado": false
+     },
+    {
+    "id": 13,
+    "titulo": "Desayuno Saludable",
+    "descripcion": "Prepara un desayuno equilibrado con proteínas, carbohidratos complejos y grasas saludables",
+    "nivelDificultad": "Fácil",
+    "categoria": "Nutrición",
+    "completado": false
+     },
+    {
+    "id": 14,
+    "titulo": "Organizar Espacio de Trabajo",
+    "descripcion": "Limpia y organiza completamente tu escritorio o espacio de trabajo",
+    "nivelDificultad": "Medio",
+    "categoria": "Productividad",
+    "completado": false
+     },
+    {
+    "id": 15,
+    "titulo": "Gratitud Diaria",
+    "descripcion": "Escribe 3 cosas por las que te sientes agradecido hoy",
+    "nivelDificultad": "Fácil",
+    "categoria": "Mindfulness",
+    "completado": false
+    }
+  ]
+ }

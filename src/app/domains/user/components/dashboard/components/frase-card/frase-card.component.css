@@ -1,0 +1,11 @@
+.phrase-card {
+  padding: 16px;
+  font-style: italic;
+  background-color: #ffffff;
+}
+
+.phrase-card blockquote {
+  margin-top: 12px;
+  font-size: 1rem;
+  color: #444;
+}

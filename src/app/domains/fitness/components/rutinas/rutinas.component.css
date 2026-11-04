@@ -1,0 +1,57 @@
+.rutinas-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 1.5rem;
+  background-color: #f4e9e6;
+  border-radius: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+
+}
+
+.titulo {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #212529;
+}
+
+.rutina-card {
+  background-color: white;
+  padding: 16px 24px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.dia {
+  font-size: 20px;
+  font-weight: 600;
+  color: #4caf50;
+  margin-bottom: 12px;
+}
+
+.lista-ejercicios {
+  list-style-type: none;
+  padding: 0;
+}
+
+.lista-ejercicios li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.nombre {
+  font-weight: 500;
+}
+
+.reps {
+  color: #495057;
+}

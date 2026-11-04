@@ -1,0 +1,84 @@
+<!-- dashboard.component.html -->
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Dashboard</h1>
+    <button mat-icon-button [matMenuTriggerFor]="menu" class="notification-icon">
+      <mat-icon>notifications</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="navigateTo('/profile')">
+        <mat-icon>person</mat-icon>
+        <span>Perfil</span>
+      </button>
+      <button mat-menu-item (click)="navigateTo('/settings')">
+        <mat-icon>settings</mat-icon>
+        <span>Configuración</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </mat-menu>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="main-content">
+    <!-- Bodyweight chart (lado izquierdo) -->
+    <div>
+      <app-bodyweight-card></app-bodyweight-card>
+    </div>
+
+    <!-- Stats y Challenge (lado derecho) -->
+    <div>
+      <app-streak-card class="animate-delay-1"></app-streak-card>
+      <app-reto-card class="animate-delay-2"></app-reto-card>
+    </div>
+  </div>
+
+  <!-- Sección inferior -->
+  <div class="bottom-section">
+    <!-- Progreso -->
+    <app-progreso-card class="animate-delay-4"></app-progreso-card>
+
+    <!-- Frase del día -->
+    <app-frase-card class="animate-delay-5"></app-frase-card>
+
+    <!-- Avatar -->
+    <app-avatar-card class="animate-delay-6"></app-avatar-card>
+  </div>
+
+  <!-- Navegación inferior -->
+  <app-bottom-navbar></app-bottom-navbar>
+</div>
+
+  <!-- Bottom nav
+  <footer class="bottom-nav">
+    <button mat-icon-button (click)="navigateTo('/dashboard')">
+      <mat-icon>home</mat-icon>
+    </button>
+    <button mat-icon-button (click)="navigateTo('/nutricion')">
+      <mat-icon>restaurant</mat-icon>
+    </button>
+    <button mat-icon-button (click)="navigateTo('/rutinas')">
+      <mat-icon>fitness_center</mat-icon>
+    </button>
+    <button mat-icon-button (click)="navigateTo('/retos')">
+      <mat-icon>emoji_events</mat-icon>
+    </button>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_horiz</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </mat-menu>
+  </footer>-->
+
+  <app-bottom-navbar></app-bottom-navbar>
+
+
+

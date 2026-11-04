@@ -1,0 +1,13 @@
+.streak-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  text-align: center;
+}
+
+.streak-card mat-icon {
+  font-size: 40px;
+  color: #4caf50;
+}

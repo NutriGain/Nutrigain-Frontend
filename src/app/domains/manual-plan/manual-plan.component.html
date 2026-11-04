@@ -1,0 +1,113 @@
+<div class="container">
+  <!-- Notificación flotante -->
+  <div class="notification"
+       [class.show]="showNotification"
+       [class.success]="notificationType === 'success'"
+       [class.error]="notificationType === 'error'"
+       [class.info]="notificationType === 'info'">
+    <span class="notification-message">{{ notificationMessage }}</span>
+    <button class="notification-close" (click)="closeNotification()">×</button>
+  </div>
+
+  <div class="plan-card">
+    <h2>🍽️ Plan Nutricional</h2>
+
+    <!-- Selector de tipo de comida -->
+    <div class="meal-type-selector">
+      <label for="mealType">Selecciona el tipo de comida:</label>
+      <select id="mealType" [(ngModel)]="selectedType" (change)="onTypeChange()">
+        <option *ngFor="let type of mealTypes" [value]="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <!-- Tabla de diseño que muestra las comidas filtradas -->
+    <div class="plans-table" *ngIf="filteredMeals.length > 0">
+      <div class="table-header">
+        <div class="col-type">Type</div>
+        <div class="col-name">Name</div>
+        <div class="col-info">Info</div>
+        <div class="col-add">Add</div>
+      </div>
+      <div class="table-body">
+        <div class="table-row"
+             *ngFor="let meal of filteredMeals; trackBy: trackById; let i = index"
+             [style.--row-index]="i">
+          <div class="col-type">
+            <span class="meal-type-badge">{{ meal.type }}</span>
+          </div>
+          <div class="col-name">
+            <span class="meal-name">{{ meal.name }}</span>
+          </div>
+          <div class="col-info">
+            <button class="info-btn" (click)="viewDetail(meal.id)" title="Ver detalles">
+              📖
+            </button>
+          </div>
+          <div class="col-add">
+            <button class="add-btn"
+                    [disabled]="isAdded(meal.id)"
+                    (click)="addMeal(meal.id)"
+                    [title]="isAdded(meal.id) ? 'Ya agregada' : 'Agregar al plan'">
+              <span [innerHTML]="isAdded(meal.id) ? '✅' : '➕'"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resumen nutricional -->
+    <div class="nutrition-summary" *ngIf="meals.length > 0">
+      <h3>📊 Resumen Nutricional</h3>
+      <div class="nutrition-cards">
+        <div class="nutrition-card calories">
+          <div class="nutrition-icon">🔥</div>
+          <div class="nutrition-info">
+            <span class="nutrition-value">{{ totalCalories }}</span>
+            <span class="nutrition-label">Calorías</span>
+          </div>
+        </div>
+        <div class="nutrition-card proteins">
+          <div class="nutrition-icon">💪</div>
+          <div class="nutrition-info">
+            <span class="nutrition-value">{{ totalProteins }}g</span>
+            <span class="nutrition-label">Proteínas</span>
+          </div>
+        </div>
+        <div class="nutrition-card meals-count">
+          <div class="nutrition-icon">🍽️</div>
+          <div class="nutrition-info">
+            <span class="nutrition-value">{{ meals.length }}</span>
+            <span class="nutrition-label">Comidas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de comidas agregadas -->
+    <div class="added-meals-section" *ngIf="meals.length > 0">
+      <h3>Comidas agregadas</h3>
+      <div class="added-meals-list">
+        <div class="added-meal-item"
+             *ngFor="let meal of meals; trackBy: trackById; let i = index"
+             [style.--item-index]="i">
+          <div class="meal-info">
+            <span class="meal-name-added">{{ meal.name }}</span>
+            <span class="meal-details">{{ meal.calories }} kcal • {{ meal.proteins }}g proteína</span>
+          </div>
+          <button class="remove-btn"
+                  (click)="removeMeal(meal.id)"
+                  title="Remover del plan">✖</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje cuando no hay comidas agregadas -->
+    <div class="empty-state" *ngIf="meals.length === 0">
+      <div class="empty-icon">🍽️</div>
+      <h3>No hay comidas en tu plan</h3>
+      <p>Agrega comidas desde la tabla superior para comenzar a crear tu plan nutricional personalizado.</p>
+    </div>
+  <div class="back-button-container">
+    <button class="back-btn" (click)="goBack()">← Volver</button>
+  </div>
+</div>

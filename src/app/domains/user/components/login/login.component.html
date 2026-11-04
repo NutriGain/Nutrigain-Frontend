@@ -1,0 +1,50 @@
+<div class="login-wrapper">
+  <mat-card class="login-card">
+    <!-- Icono del gimnasio -->
+    <div class="gym-icon">💪</div>
+
+    <h2>Bienvenido a NutriGain</h2>
+    <p class="subtitle">Transforma tu cuerpo, transforma tu vida</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>📧 Email</mat-label>
+        <input matInput formControlName="email" type="email" />
+        <mat-error *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+          ⚠️ Ingresa un correo válido
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>🔒 Contraseña</mat-label>
+        <input matInput formControlName="password" type="password" />
+        <mat-error *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+          ⚠️ La contraseña es obligatoria
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        type="submit"
+        class="full-width login-button"
+        [class.loading]="isLoading"
+        [disabled]="isLoading">
+        <span *ngIf="!isLoading">🚀 Iniciar Sesión</span>
+        <span *ngIf="isLoading">Entrando...</span>
+      </button>
+
+      <button
+        mat-stroked-button
+        type="button"
+        class="full-width register-button"
+        (click)="irARegistro()"
+        [disabled]="isLoading">
+        ✨ ¿No tienes cuenta? Regístrate
+      </button>
+
+      <div *ngIf="errorMessage" class="error-message">
+        <strong>❌ {{ errorMessage }}</strong>
+      </div>
+    </form>
+  </mat-card>
+</div>

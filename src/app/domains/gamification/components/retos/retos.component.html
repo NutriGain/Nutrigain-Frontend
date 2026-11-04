@@ -1,0 +1,92 @@
+<div class="retos-wrapper" *ngIf="retoActual">
+  <h2 class="titulo">Reto del Día 💪</h2>
+
+  <div class="main-content">
+    <!-- Columna izquierda -->
+    <div class="left-column">
+      <!-- Selector de categorías -->
+      <mat-card class="selector-card">
+        <h3>Filtrar por categoría</h3>
+        <div class="categorias-grid">
+          <button
+            mat-raised-button
+            *ngFor="let categoria of categorias"
+            [class.active]="categoriaSeleccionada === categoria"
+            (click)="seleccionarCategoria(categoria)"
+            class="categoria-btn">
+            {{ categoria }}
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Columna central -->
+    <div class="center-column">
+      <!-- Tarjeta del reto actual -->
+      <mat-card class="reto-card" [@slideInUp]>
+        <div class="reto-header">
+          <div class="difficulty-badge" [ngClass]="getDifficultyClass(retoActual.nivelDificultad)">
+            {{ retoActual.nivelDificultad }}
+          </div>
+        </div>
+
+        <div class="reto-content">
+          <h3 class="reto-titulo">{{ retoActual.titulo || 'Reto Diario' }}</h3>
+          <p class="descripcion">
+            <span class="label">📝 Descripción:</span>
+            {{ retoActual.descripcion }}
+          </p>
+
+          <div class="reto-stats">
+            <div class="stat-item">
+              <span class="stat-icon">⚡</span>
+              <span class="stat-label">Dificultad</span>
+              <span class="stat-value">{{ retoActual.nivelDificultad }}</span>
+            </div>
+            <div class="stat-item" *ngIf="retoActual.categoria">
+              <span class="stat-icon">🎯</span>
+              <span class="stat-label">Categoría</span>
+              <span class="stat-value">{{ retoActual.categoria }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="reto-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="seleccionarRetoAleatorio()"
+            class="btn-nuevo-reto"
+            [@pulse]="animacionBoton">
+            <mat-icon>refresh</mat-icon>
+            Nuevo Reto
+          </button>
+
+          <button
+            mat-stroked-button
+            color="accent"
+            (click)="marcarComoCompletado()"
+            class="btn-completar"
+            [disabled]="retoActual.completado">
+            <mat-icon>{{ retoActual.completado ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+            {{ retoActual.completado ? 'Completado' : 'Completar' }}
+          </button>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="right-column">
+      <!-- Progreso del día -->
+      <mat-card class="progreso-card" [@fadeIn]>
+        <h4>Progreso del Día</h4>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getProgreso()"></div>
+        </div>
+        <p class="progreso-texto">{{ getRetosCompletados() }} de {{ retos.length }} retos completados</p>
+      </mat-card>
+    </div>
+  </div>
+
+  <app-bottom-navbar></app-bottom-navbar>
+</div>

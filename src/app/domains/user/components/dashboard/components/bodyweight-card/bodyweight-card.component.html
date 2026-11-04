@@ -1,0 +1,25 @@
+<mat-card class="main-card">
+  <div class="card-header">
+    <div>
+      <h3>Bodyweight</h3>
+    </div>
+    <div class="card-subtitle">Statistics</div>
+  </div>
+
+  <div class="responsive-chart-container">
+    <ngx-charts-line-chart
+      [view]="view"
+      [scheme]="colorScheme"
+      [results]="data"
+      [xAxis]="true"
+      [yAxis]="true"
+      [legend]="false"
+      [showXAxisLabel]="true"
+      [xAxisLabel]="'Semana'"
+      [showYAxisLabel]="true"
+      [yAxisLabel]="'Peso (kg)'"
+      [autoScale]="true"
+      [animations]="true">
+    </ngx-charts-line-chart>
+  </div>
+</mat-card>

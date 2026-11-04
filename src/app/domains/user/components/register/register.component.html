@@ -1,0 +1,107 @@
+<div class="register-wrapper">
+  <div class="register-container">
+    <div class="logo">💪</div>
+    <h1 class="title">Regístrate en NutriGain</h1>
+    <p class="subtitle">Comienza tu transformación hoy</p>
+
+    <div class="general-error" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </div>
+
+    <div class="success-message" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <div class="input-container">
+          <span class="input-icon">👤</span>
+          <input
+            type="text"
+            class="form-input"
+            [class.error]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
+            formControlName="nombre"
+            placeholder="Nombre completo">
+        </div>
+        <div class="error-message" [class.show]="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+          El nombre es obligatorio
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="input-container">
+          <span class="input-icon">📧</span>
+          <input
+            type="email"
+            class="form-input"
+            [class.error]="form.get('email')?.invalid && form.get('email')?.touched"
+            formControlName="email"
+            placeholder="Email">
+        </div>
+        <div class="error-message" [class.show]="form.get('email')?.invalid && form.get('email')?.touched">
+          Ingresa un correo válido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="input-container">
+          <span class="input-icon">🔒</span>
+          <input
+            type="password"
+            class="form-input"
+            [class.error]="form.get('password')?.invalid && form.get('password')?.touched"
+            formControlName="password"
+            placeholder="Contraseña">
+        </div>
+        <div class="error-message" [class.show]="form.get('password')?.invalid && form.get('password')?.touched">
+          La contraseña debe tener al menos 6 caracteres
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="input-container">
+          <span class="input-icon">🎂</span>
+          <input
+            type="number"
+            class="form-input"
+            [class.error]="form.get('edad')?.invalid && form.get('edad')?.touched"
+            formControlName="edad"
+            placeholder="Edad"
+            min="13"
+            max="100">
+        </div>
+        <div class="error-message" [class.show]="form.get('edad')?.invalid && form.get('edad')?.touched">
+          Edad válida requerida (13-100)
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="input-container select-container">
+          <span class="input-icon">🎯</span>
+          <select
+            class="form-select"
+            [class.error]="form.get('caminoSeleccionado')?.invalid && form.get('caminoSeleccionado')?.touched"
+            formControlName="caminoSeleccionado">
+            <option value="">Selecciona tu camino fitness</option>
+            <option value="1">💪 Musculación</option>
+            <option value="2">⚡ Agilidad</option>
+            <option value="3">🧘 Yoga</option>
+          </select>
+        </div>
+        <div class="error-message" [class.show]="form.get('caminoSeleccionado')?.invalid && form.get('caminoSeleccionado')?.touched">
+          Selecciona un camino fitness
+        </div>
+      </div>
+
+      <button type="submit" class="primary-button" [disabled]="form.invalid">
+        <span>🚀</span>
+        CREAR CUENTA
+      </button>
+
+      <button type="button" class="secondary-button" (click)="irALogin()">
+        <span>✨</span>
+        ¿Ya tienes cuenta? Inicia sesión
+      </button>
+    </form>
+  </div>
+</div>
