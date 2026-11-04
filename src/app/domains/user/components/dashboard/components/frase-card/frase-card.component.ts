@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
+import { ApiService } from '../../../../../../core/api.service';
 
 @Component({
   selector: 'app-frase-card',
@@ -11,15 +11,11 @@ import { MatCardModule } from '@angular/material/card';
   styleUrls: ['./frase-card.component.css']
 })
 export class FraseCardComponent implements OnInit {
-  frase: string = '';
+  frase = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    this.http.get<any[]>('https://fake-api-murex-one.vercel.app/mensajesMotivacionales')
-      .subscribe(data => {
-        const index = Math.floor(Math.random() * data.length);
-        this.frase = data[index]?.texto;
-      });
+    this.api.getRandomMessage().subscribe(message => (this.frase = message.text));
   }
 }

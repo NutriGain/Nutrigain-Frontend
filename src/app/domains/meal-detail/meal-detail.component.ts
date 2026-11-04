@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MealService, Meal } from '../../services/meal.service';
+import { ApiService } from '../../core/api.service';
+import { Meal } from '../../core/models';
+import { mealTypeEs } from '../../core/i18n';
 
 @Component({
   standalone: true,
@@ -12,22 +14,25 @@ import { MealService, Meal } from '../../services/meal.service';
 })
 export class MealDetailComponent implements OnInit {
   meal?: Meal;
-  currentDot: number = 2; // Dot activo por defecto (el tercero como en tu diseño original)
+  currentDot: number = 2;
+
+  readonly typeLabel = mealTypeEs;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private mealService: MealService
+    private api: ApiService
   ) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.meal = this.mealService.getMealById(id);
-
-    if (!this.meal) {
-      this.showErrorAlert();
-      this.router.navigate(['/manual-plan']);
-    }
+    this.api.getMeal(id).subscribe({
+      next: meal => (this.meal = meal),
+      error: () => {
+        this.showErrorAlert();
+        this.router.navigate(['/manual']);
+      }
+    });
   }
 
   setActiveDot(index: number): void {
@@ -35,7 +40,6 @@ export class MealDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    // Añadir una pequeña animación antes de navegar
     const container = document.querySelector('.container');
     if (container) {
       container.classList.add('fade-out');
@@ -48,7 +52,6 @@ export class MealDetailComponent implements OnInit {
   }
 
   private showErrorAlert(): void {
-    // Crear una alerta personalizada más elegante que alert()
     const alertDiv = document.createElement('div');
     alertDiv.innerHTML = `
       <div style="
@@ -64,38 +67,12 @@ export class MealDetailComponent implements OnInit {
         z-index: 1000;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         text-align: center;
-        animation: slideIn 0.3s ease-out;
       ">
         <h3 style="margin: 0 0 10px 0;">¡Oops!</h3>
         <p style="margin: 0;">No se encontró la comida seleccionada.</p>
       </div>
     `;
-
-    // Añadir estilos de animación
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translate(-50%, -50%) scale(0.8);
-        }
-        to {
-          opacity: 1;
-          transform: translate(-50%, -50%) scale(1);
-        }
-      }
-    `;
-    document.head.appendChild(style);
     document.body.appendChild(alertDiv);
-
-    // Remover después de 3 segundos
-    setTimeout(() => {
-      if (alertDiv.parentNode) {
-        alertDiv.remove();
-      }
-      if (style.parentNode) {
-        style.remove();
-      }
-    }, 3000);
+    setTimeout(() => alertDiv.remove(), 3000);
   }
 }

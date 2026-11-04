@@ -1,8 +1,9 @@
-<mat-card class="challenge-card" *ngIf="reto">
+<mat-card class="challenge-card" *ngIf="asignacion">
   <p>Today's<br><strong>XTREME Challenge!</strong></p>
-  <p>{{ reto.descripcion }}</p>
-  <p><em>Dificultad:</em> {{ reto.nivelDificultad }}</p>
-  <button mat-raised-button color="primary" (click)="obtenerReto()">
-    Cambiar reto
+  <p><strong>{{ asignacion.challenge.title }}</strong></p>
+  <p>{{ asignacion.challenge.description }}</p>
+  <p><em>Recompensa:</em> {{ asignacion.xpReward }} XP</p>
+  <button mat-raised-button color="primary" [disabled]="completado" (click)="completar()">
+    {{ completado ? '¡Completado!' : 'Completar' }}
   </button>
 </mat-card>

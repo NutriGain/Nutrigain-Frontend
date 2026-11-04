@@ -1,15 +1,15 @@
 <h2>Resumen General</h2>
 
-<p><strong>Usuario:</strong> {{ user?.nombre }}</p>
-<p><strong>Nivel actual:</strong> {{ avatar?.nivel }}</p>
+<p><strong>Usuario:</strong> {{ user()?.name }}</p>
+<p><strong>Nivel actual:</strong> {{ avatar?.level }}</p>
 <p><strong>Progreso semanal:</strong> {{ progreso }}%</p>
 
 <div *ngIf="ultimaComida">
-  <p><strong>Última comida:</strong> {{ ultimaComida.tipo }} - {{ ultimaComida.descripcion }}</p>
+  <p><strong>Última comida:</strong> {{ tipoEs(ultimaComida.mealType) }} - {{ ultimaComida.meal.name }}</p>
 </div>
 
 <div *ngIf="reto">
-  <p><strong>Reto sugerido:</strong> {{ reto.descripcion }} ({{ reto.nivelDificultad }})</p>
+  <p><strong>Reto extremo de hoy:</strong> {{ reto.challenge.description }} ({{ dificultadEs(reto.challenge.difficulty) }})</p>
 </div>
 
 <div *ngIf="progresoCompleto" class="logro-container">

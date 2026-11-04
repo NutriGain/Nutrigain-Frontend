@@ -1,7 +1,7 @@
-<div class="retos-wrapper" *ngIf="retoActual">
+<div class="retos-wrapper">
   <h2 class="titulo">Reto del Día 💪</h2>
 
-  <div class="main-content">
+  <div class="main-content" *ngIf="retoActual; else cargando">
     <!-- Columna izquierda -->
     <div class="left-column">
       <!-- Selector de categorías -->
@@ -11,12 +11,15 @@
           <button
             mat-raised-button
             *ngFor="let categoria of categorias"
-            [class.active]="categoriaSeleccionada === categoria"
-            (click)="seleccionarCategoria(categoria)"
+            [class.active]="categoriaSeleccionada === categoria.code"
+            (click)="seleccionarCategoria(categoria.code)"
             class="categoria-btn">
-            {{ categoria }}
+            {{ categoria.label }}
           </button>
         </div>
+        <button mat-stroked-button color="warn" class="categoria-btn" (click)="cargarExtremo()">
+          🔥 Reto extremo del día
+        </button>
       </mat-card>
     </div>
 
@@ -25,37 +28,39 @@
       <!-- Tarjeta del reto actual -->
       <mat-card class="reto-card" [@slideInUp]>
         <div class="reto-header">
-          <div class="difficulty-badge" [ngClass]="getDifficultyClass(retoActual.nivelDificultad)">
-            {{ retoActual.nivelDificultad }}
+          <div class="difficulty-badge" [ngClass]="getDifficultyClass(retoActual.challenge.difficulty)">
+            {{ dificultadEs(retoActual.challenge.difficulty) }}
           </div>
         </div>
 
         <div class="reto-content">
-          <h3 class="reto-titulo">{{ retoActual.titulo || 'Reto Diario' }}</h3>
+          <h3 class="reto-titulo">{{ retoActual.challenge.title }}</h3>
           <p class="descripcion">
             <span class="label">📝 Descripción:</span>
-            {{ retoActual.descripcion }}
+            {{ retoActual.challenge.description }}
           </p>
 
           <div class="reto-stats">
             <div class="stat-item">
               <span class="stat-icon">⚡</span>
-              <span class="stat-label">Dificultad</span>
-              <span class="stat-value">{{ retoActual.nivelDificultad }}</span>
+              <span class="stat-label">Recompensa</span>
+              <span class="stat-value">{{ retoActual.xpReward }} XP</span>
             </div>
-            <div class="stat-item" *ngIf="retoActual.categoria">
+            <div class="stat-item">
               <span class="stat-icon">🎯</span>
               <span class="stat-label">Categoría</span>
-              <span class="stat-value">{{ retoActual.categoria }}</span>
+              <span class="stat-value">{{ categoriaEs(retoActual.challenge.category) }}</span>
             </div>
           </div>
         </div>
+
+        <p class="error" *ngIf="error">{{ error }}</p>
 
         <div class="reto-actions">
           <button
             mat-raised-button
             color="primary"
-            (click)="seleccionarRetoAleatorio()"
+            (click)="nuevoReto()"
             class="btn-nuevo-reto"
             [@pulse]="animacionBoton">
             <mat-icon>refresh</mat-icon>
@@ -67,9 +72,9 @@
             color="accent"
             (click)="marcarComoCompletado()"
             class="btn-completar"
-            [disabled]="retoActual.completado">
-            <mat-icon>{{ retoActual.completado ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
-            {{ retoActual.completado ? 'Completado' : 'Completar' }}
+            [disabled]="retoActual.status === 'COMPLETED'">
+            <mat-icon>{{ retoActual.status === 'COMPLETED' ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+            {{ retoActual.status === 'COMPLETED' ? 'Completado' : 'Completar' }}
           </button>
         </div>
       </mat-card>
@@ -83,10 +88,14 @@
         <div class="progress-bar">
           <div class="progress-fill" [style.width.%]="getProgreso()"></div>
         </div>
-        <p class="progreso-texto">{{ getRetosCompletados() }} de {{ retos.length }} retos completados</p>
+        <p class="progreso-texto">{{ getRetosCompletados() }} de {{ getTotalHoy() }} retos completados hoy</p>
       </mat-card>
     </div>
   </div>
+
+  <ng-template #cargando>
+    <p>{{ error || 'Cargando retos...' }}</p>
+  </ng-template>
 
   <app-bottom-navbar></app-bottom-navbar>
 </div>

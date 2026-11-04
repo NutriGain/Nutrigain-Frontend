@@ -4,12 +4,12 @@
 
     <div class="meal-content">
       <div class="meal-image">
-        <img [src]="meal.image" [alt]="meal.name" class="detail-img">
+        <img [src]="meal.imageUrl" [alt]="meal.name" class="detail-img">
       </div>
 
       <div class="meal-info">
         <h3>{{ meal.name }}</h3>
-        <div class="meal-type-badge">{{ meal.type }}</div>
+        <div class="meal-type-badge">{{ typeLabel(meal.mealType) }}</div>
 
         <h4>Nutritional Info</h4>
         <div class="nutrition-grid">

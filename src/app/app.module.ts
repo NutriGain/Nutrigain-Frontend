@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
-import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import {MatToolbar} from '@angular/material/toolbar';
-import {provideAnimations} from '@angular/platform-browser/animations';
+import { MatToolbar } from '@angular/material/toolbar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { authInterceptor } from './core/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -14,12 +14,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
     RouterModule.forRoot(routes),
     MatToolbar,
     BrowserAnimationsModule
   ],
-  providers: [provideAnimations()],
+  providers: [provideHttpClient(withInterceptors([authInterceptor]))],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

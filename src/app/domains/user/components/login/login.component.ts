@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserApiService } from '../../services/user-api.service';
+import { AuthService } from '../../../../core/auth.service';
 import { MatCard } from '@angular/material/card';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
@@ -30,11 +30,16 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserApiService,
+    private auth: AuthService,
     private router: Router
   ) {}
 
   ngOnInit() {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/dashboard']);
+      return;
+    }
+
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -68,34 +73,19 @@ export class LoginComponent implements OnInit {
 
     const { email, password } = this.form.value;
 
-    // Simulamos un delay para mostrar la animación de carga
-    setTimeout(() => {
-      this.userService.getUsers().subscribe({
-        next: (users) => {
-          const found = users.find(u => u.email === email && u.password === password);
-
-          if (found) {
-            // Animación de éxito
-            this.showSuccessAnimation();
-
-            // Navegamos después de la animación
-            setTimeout(() => {
-              this.router.navigate(['/dashboard']);
-            }, 1000);
-          } else {
-            this.isLoading = false;
-            this.errorMessage = 'Credenciales incorrectas. Verifica tu email y contraseña.';
-            this.shakeCard();
-          }
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = 'Error de conexión. Intenta nuevamente.';
-          this.shakeCard();
-          console.error('Error en login:', error);
-        }
-      });
-    }, 800); // Reducido el delay
+    this.auth.signIn(email, password).subscribe({
+      next: () => {
+        this.showSuccessAnimation();
+        setTimeout(() => this.router.navigate(['/dashboard']), 800);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error?.status === 401 || error?.status === 400
+          ? 'Credenciales incorrectas. Verifica tu email y contraseña.'
+          : 'Error de conexión. Intenta nuevamente.';
+        this.shakeCard();
+      }
+    });
   }
 
   private markFormGroupTouched() {

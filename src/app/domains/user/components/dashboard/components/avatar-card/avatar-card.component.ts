@@ -1,28 +1,29 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {HttpClient} from '@angular/common/http';
-import {MatCard, MatCardModule} from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
+import { ApiService } from '../../../../../../core/api.service';
+import { Avatar } from '../../../../../../core/models';
+import { moodEs } from '../../../../../../core/i18n';
 
 @Component({
   selector: 'app-avatar-card',
-  imports: [CommonModule, MatCardModule,
-    MatCard
-  ],
+  imports: [CommonModule, MatCardModule],
   templateUrl: './avatar-card.component.html',
   standalone: true,
   styleUrl: './avatar-card.component.css'
 })
-
 export class AvatarCardComponent implements OnInit {
-  avatar: any;
+  avatar?: Avatar;
 
-  constructor(private http: HttpClient) {}
+  readonly moodEs = moodEs;
+
+  constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    const userId = 1;
-    this.http.get<any[]>(`https://fake-api-murex-one.vercel.app/avatares?userId=${userId}`)
-      .subscribe(data => {
-        this.avatar = data[0];
-      });
+    this.api.getAvatar().subscribe(avatar => (this.avatar = avatar));
+  }
+
+  fallbackImage(event: Event): void {
+    (event.target as HTMLImageElement).src = 'assets/avatar1.png';
   }
 }

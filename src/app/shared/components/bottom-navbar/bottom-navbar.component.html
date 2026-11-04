@@ -11,11 +11,22 @@
   <button mat-icon-button (click)="navigateTo('/retos')">
     <mat-icon>emoji_events</mat-icon>
   </button>
+  <button mat-icon-button (click)="navigateTo('/ranking')">
+    <mat-icon>leaderboard</mat-icon>
+  </button>
   <button mat-icon-button [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </button>
 
   <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="navigateTo('/perfil')">
+      <mat-icon>person</mat-icon>
+      <span>Perfil</span>
+    </button>
+    <button mat-menu-item (click)="navigateTo('/logros')">
+      <mat-icon>military_tech</mat-icon>
+      <span>Logros</span>
+    </button>
     <button mat-menu-item (click)="logout()">
       <mat-icon>logout</mat-icon>
       <span>Cerrar sesión</span>

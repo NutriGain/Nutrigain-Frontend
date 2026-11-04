@@ -73,3 +73,36 @@
   font-size: 0.9rem;
   color: #666;
 }
+
+.weight-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 8px 16px 16px;
+}
+
+.weight-form input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.weight-form button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4caf50;
+  color: #fff;
+  cursor: pointer;
+}
+
+.weight-form button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.weight-error {
+  color: #c62828;
+  font-size: 12px;
+}

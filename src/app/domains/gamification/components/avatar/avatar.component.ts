@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import {environment} from '../../../../../environments/environment';
+import { ApiService } from '../../../../core/api.service';
+import { Avatar } from '../../../../core/models';
+import { moodEs } from '../../../../core/i18n';
 
 @Component({
   selector: 'app-avatar',
@@ -11,19 +12,17 @@ import {environment} from '../../../../../environments/environment';
   styleUrls: ['./avatar.component.css']
 })
 export class AvatarComponent implements OnInit {
-  avatar: any;
+  avatar?: Avatar;
 
-  private readonly base = environment.apiUrl;
+  readonly moodEs = moodEs;
 
-  constructor(private http: HttpClient) {}
+  constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    const userId = 1;
-    this.http.get<any[]>(`${this.base}/avatares?userId=${userId}`)
-      .subscribe(data => {
-        if (data.length > 0) {
-          this.avatar = data[0];
-        }
-      });
+    this.api.getAvatar().subscribe(avatar => (this.avatar = avatar));
+  }
+
+  fallbackImage(event: Event): void {
+    (event.target as HTMLImageElement).src = 'assets/avatar1.png';
   }
 }
